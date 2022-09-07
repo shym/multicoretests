@@ -1,0 +1,23 @@
+;; Tests of the interactions between Threads and Domains
+
+;; this prevents the tests from running on a default build
+(alias
+ (name default)
+ (package multicoretests)
+ (deps threadomain.exe))
+
+
+;; Tests of Domain's spawn functionality (non-STM)
+
+(executable
+ (name threadomain)
+ (modes native byte)
+ (modules threadomain)
+ (libraries util qcheck-core qcheck-core.runner)
+ (preprocess (pps ppx_deriving.show ppx_deriving.eq)))
+
+(rule
+ (alias runtest)
+ (package multicoretests)
+ (deps threadomain.exe)
+ (action (run ./%{deps} --no-colors --verbose)))
