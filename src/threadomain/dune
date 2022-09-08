@@ -13,7 +13,7 @@
  (name threadomain)
  (modes native byte)
  (modules threadomain)
- (libraries util qcheck-core qcheck-core.runner)
+ (libraries util qcheck-core qcheck-core.runner threads)
  (preprocess (pps ppx_deriving.show ppx_deriving.eq)))
 
 (rule
