@@ -4,7 +4,7 @@ open QCheck
    domain or a thread *)
 
 (* The global number of nodes that will be spawn *)
-let size = 16
+let size = 3
 
 let swap arr i j =
   let x = arr.(i) in
@@ -62,7 +62,7 @@ type spawn_join = {
   join_permutation: int array;
   join_tree:        int array;
   domain_or:        bool array
-} [@@deriving show]
+} [@@deriving show { with_path = false }]
 
 let build_spawn_join spawn_tree join_permutation join_tree domain_or =
   { spawn_tree; join_permutation; join_tree; domain_or }
@@ -94,18 +94,23 @@ type handles = {
 }
 
 let join_one hdls i =
+  (* Printf.printf "Joining %d\n%!" i ; *)
   Semaphore.Binary.acquire hdls.available.(i) ;
-  match hdls.handles.(i) with
-  | NoHdl -> failwith "Semaphore acquired but no handle to join"
-  | DomainHdl h -> Domain.join h
-  | ThreadHdl h -> Thread.join h
+  (* Printf.printf "Semaphore acquired for joining %d\n%!" i ; *)
+  ( match hdls.handles.(i) with
+    | NoHdl -> failwith "Semaphore acquired but no handle to join"
+    | DomainHdl h -> Domain.join h
+    | ThreadHdl h -> Thread.join h )
+  (* ; Printf.printf "Joined %d\n%!" i *)
 
 let rec spawn_one sj hdls i =
+  (* Printf.printf "Spawning %d (aka %d)\n%!" i sj.join_permutation.(i) ; *)
   hdls.handles.(sj.join_permutation.(i)) <-
     if sj.domain_or.(i)
     then DomainHdl (Domain.spawn (run_node sj hdls i))
     else ThreadHdl (Thread.create (run_node sj hdls i) ()) ;
   Semaphore.Binary.release hdls.available.(sj.join_permutation.(i))
+  (* ; Printf.printf "Semaphore released for joining %d\n%!" sj.join_permutation.(i) *)
 
 and run_node sj hdls i () =
   (* spawn nodes *)
@@ -121,6 +126,7 @@ and run_node sj hdls i () =
   done
 
 let run_all_nodes sj =
+  (* Printf.printf "Test %s\n%!" (show_spawn_join sj) ; *)
   let hdls = { handles = Array.make size NoHdl;
                available = Array.init size (fun _ -> Semaphore.Binary.make false) } in
   spawn_one sj hdls 0;
@@ -128,9 +134,9 @@ let run_all_nodes sj =
   true (* if we reach this safely, the test is passed *)
 
 let main_test = Test.make ~name:"Mash up of threads and domains"
-                          ~count:1000
+                          ~count:10
                           (make ~print:show_spawn_join gen_spawn_join)
-                          run_all_nodes
+                          (Util.fork_prop_with_timeout 1 run_all_nodes)
 
 let _ =
   Util.set_ci_printing () ;

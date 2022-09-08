@@ -6,9 +6,6 @@
  (package multicoretests)
  (deps threadomain.exe))
 
-
-;; Tests of Domain's spawn functionality (non-STM)
-
 (executable
  (name threadomain)
  (modes native byte)
