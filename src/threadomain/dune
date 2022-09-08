@@ -18,3 +18,9 @@
  (package multicoretests)
  (deps threadomain.exe)
  (action (run ./%{deps} --no-colors --verbose)))
+
+(executable
+ (name example)
+ (modes native byte)
+ (modules example)
+ (libraries threads))
