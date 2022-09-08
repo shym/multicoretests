@@ -26,3 +26,22 @@ let _ =
   ( match hdls.(1) with
     | ThreadHdl h -> Thread.join h
     | _ -> failwith "Unexpected" )
+
+
+(* Even though the following does work: *)
+
+(*
+
+let hdl = ref (None : unit Domain.t option)
+let sem = Semaphore.Binary.make false
+
+let _ =
+  hdl := Some (Domain.spawn (fun () -> Semaphore.Binary.acquire sem ;
+                                       match !hdl with
+                                       | Some h -> Domain.join h
+                                       | _ -> failwith "boom")) ;
+  Semaphore.Binary.release sem
+
+*)
+
+(* let _ = print_int Domain.recommended_domain_count *)
