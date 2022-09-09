@@ -99,8 +99,14 @@ let join_one hdls i =
   (* Printf.printf "Semaphore acquired for joining %d\n%!" i ; *)
   ( match hdls.handles.(i) with
     | NoHdl -> failwith "Semaphore acquired but no handle to join"
-    | DomainHdl h -> Domain.join h
-    | ThreadHdl h -> Thread.join h )
+    | DomainHdl h -> 
+        if Domain.get_id h <> Domain.self ()
+           (* we cannot join a domain from a thread running on it *)
+        then ( Domain.join h ;
+               hdls.handles.(i) <- NoHdl )
+        else Printf.printf "Skipping one join\n%!"
+    | ThreadHdl h -> ( Thread.join h ;
+                       hdls.handles.(i) <- NoHdl ) )
   (* ; Printf.printf "Joined %d\n%!" i *)
 
 let rec spawn_one sj hdls i =
@@ -126,15 +132,22 @@ and run_node sj hdls i () =
   done
 
 let run_all_nodes sj =
-  (* Printf.printf "Test %s\n%!" (show_spawn_join sj) ; *)
+  Printf.printf "Test %s\n%!" (show_spawn_join sj) ;
   let hdls = { handles = Array.make size NoHdl;
                available = Array.init size (fun _ -> Semaphore.Binary.make false) } in
   spawn_one sj hdls 0;
   join_one hdls 0;
+  (* and now we join all the remaining Domains *)
+  for i = 0 to size-1 do
+    match hdls.handles.(i) with
+    | ThreadHdl _ -> failwith "Thread left dangling"
+    | DomainHdl h -> Domain.join h
+    | NoHdl -> ()
+  done ;
   true (* if we reach this safely, the test is passed *)
 
 let main_test = Test.make ~name:"Mash up of threads and domains"
-                          ~count:10
+                          ~count:1000
                           (make ~print:show_spawn_join gen_spawn_join)
                           (Util.fork_prop_with_timeout 1 run_all_nodes)
 
