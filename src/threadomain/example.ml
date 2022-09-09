@@ -24,20 +24,23 @@
 (*     | ThreadHdl h -> Thread.join h *)
 (*     | _ -> failwith "Unexpected" ) *)
 
-(* Even though the following does work: *)
-
-(*
 
 let hdl = ref (None : unit Domain.t option)
-let sem = Semaphore.Binary.make false
+let hdl_set = (* to wait until [hdl] has been set *)
+  Semaphore.Binary.make false
+let dom_joined = Semaphore.Binary.make false
+
+let dom_main () =
+  Semaphore.Binary.acquire hdl_set ;
+  match !hdl with
+  | Some h -> ( Domain.join h ;
+                Printf.printf "Domain alive or terminated?\n%!" ;
+                Semaphore.Binary.release dom_joined )
+  | _ -> failwith "Should never happen"
 
 let _ =
-  hdl := Some (Domain.spawn (fun () -> Semaphore.Binary.acquire sem ;
-                                       match !hdl with
-                                       | Some h -> Domain.join h
-                                       | _ -> failwith "boom")) ;
-  Semaphore.Binary.release sem
-
-*)
+  hdl := Some (Domain.spawn dom_main) ;
+  Semaphore.Binary.release hdl_set ;
+  Semaphore.Binary.acquire dom_joined
 
 (* let _ = print_int Domain.recommended_domain_count *)
