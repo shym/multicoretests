@@ -11,19 +11,6 @@ let swap arr i j =
   arr.(i) <- arr.(j) ;
   arr.(j) <- x
 
-(* Monadic style; Could be rewritten maybe with Gen.fix? *)
-(* let permutation = *)
-(*   let open Gen in *)
-(*   let rec aux arr i = *)
-(*     if i == 0 *)
-(*     then pure arr *)
-(*     else let* j = int_bound i in *)
-(*          let* _ = fun _ -> swap arr i j in *)
-(*          aux arr (i-1) *)
-(*   in *)
-(*   let* arr = fun _ -> Array.init size (fun x -> x) in *)
-(*   aux arr (size-1) *)
-
 (** Generate a permutation of [0..size-1] *)
 let permutation s =
   let arr = Array.init size (fun x -> x) in
@@ -64,9 +51,6 @@ type spawn_join = {
   domain_or:        bool array
 } [@@deriving show { with_path = false }]
 
-let build_spawn_join spawn_tree join_permutation join_tree domain_or =
-  { spawn_tree; join_permutation; join_tree; domain_or }
-
 (* Ensure that any domain is higher up in the join tree than all its
    threads, so that we cannot have a thread waiting on its domain even
    indirectly *)
@@ -77,7 +61,6 @@ let fix_permutation sj =
     then candidate
     else dom_of_thd candidate
   in
-  (* Printf.printf "Before fixing: %s\n%!" (show_spawn_join sj) ; *)
   for i = 0 to size-1 do
     if not sj.domain_or.(i) then
       let i' = sj.join_permutation.(i) in
@@ -85,24 +68,14 @@ let fix_permutation sj =
       let d' = if d = -1 then d else sj.join_permutation.(d) in
       if d' > i' then swap sj.join_permutation i d
   done ;
-  (* Printf.printf "After fixing: %s\n%!" (show_spawn_join sj) ; *)
   sj
 
-let build_fix_spawn_join spawn_tree join_permutation join_tree domain_or =
+let build_spawn_join spawn_tree join_permutation join_tree domain_or =
   fix_permutation { spawn_tree; join_permutation; join_tree; domain_or }
 
 let gen_spawn_join =
   let open Gen in
-  build_fix_spawn_join <$> tree <*> permutation <*> tree <*> array_size (pure size) bool
-
-  (* let* st = tree *)
-  (* and* jp = permutation *)
-  (* and* jt = tree *)
-  (* and* dm = array_size (pure size) bool in *)
-  (* pure { spawn_tree = st; *)
-  (*        join_permutation = jp; *)
-  (*        join_tree = jt; *)
-  (*        domain_or = dm } *)
+  build_spawn_join <$> tree <*> permutation <*> tree <*> array_size (pure size) bool
 
 type handle =
   | NoHdl
@@ -118,29 +91,20 @@ type handles = {
 }
 
 let join_one hdls i =
-  (* Printf.printf "Joining %d\n%!" i ; *)
   Semaphore.Binary.acquire hdls.available.(i) ;
-  (* Printf.printf "Semaphore acquired for joining %d\n%!" i ; *)
   ( match hdls.handles.(i) with
     | NoHdl -> failwith "Semaphore acquired but no handle to join"
-    | DomainHdl h -> 
-        if Domain.get_id h <> Domain.self ()
-           (* we cannot join a domain from a thread running on it *)
-        then ( Domain.join h ;
-               hdls.handles.(i) <- NoHdl )
-        (* else Printf.printf "Skipping one join\n%!" *)
+    | DomainHdl h -> ( Domain.join h ;
+                       hdls.handles.(i) <- NoHdl )
     | ThreadHdl h -> ( Thread.join h ;
                        hdls.handles.(i) <- NoHdl ) )
-  (* ; Printf.printf "Joined %d\n%!" i *)
 
 let rec spawn_one sj hdls i =
-  (* Printf.printf "Spawning %d (aka %d)\n%!" i sj.join_permutation.(i) ; *)
   hdls.handles.(sj.join_permutation.(i)) <-
     if sj.domain_or.(i)
     then DomainHdl (Domain.spawn (run_node sj hdls i))
     else ThreadHdl (Thread.create (run_node sj hdls i) ()) ;
   Semaphore.Binary.release hdls.available.(sj.join_permutation.(i))
-  (* ; Printf.printf "Semaphore released for joining %d\n%!" sj.join_permutation.(i) *)
 
 and run_node sj hdls i () =
   (* spawn nodes *)
@@ -156,19 +120,12 @@ and run_node sj hdls i () =
   done
 
 let run_all_nodes sj =
-  (* Printf.printf "Test %s\n%!" (show_spawn_join sj) ; *)
   let hdls = { handles = Array.make size NoHdl;
                available = Array.init size (fun _ -> Semaphore.Binary.make false) } in
   spawn_one sj hdls 0;
   join_one hdls 0;
-  (* and now we join all the remaining Domains *)
-  for i = 0 to size-1 do
-    match hdls.handles.(i) with
-    | ThreadHdl _ -> failwith "Thread left dangling"
-    | DomainHdl h -> Domain.join h
-    | NoHdl -> ()
-  done ;
-  true (* if we reach this safely, the test is passed *)
+  (* all the nodes should have been joined now *)
+  Array.for_all (fun h -> h = NoHdl) hdls.handles
 
 let main_test = Test.make ~name:"Mash up of threads and domains"
                           ~count:1000
