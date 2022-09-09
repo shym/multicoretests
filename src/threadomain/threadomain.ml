@@ -4,7 +4,7 @@ open QCheck
    domain or a thread *)
 
 (* The global number of nodes that will be spawn *)
-let size = 3
+let size = 2 * Domain.recommended_domain_count
 
 let swap arr i j =
   let x = arr.(i) in
@@ -67,9 +67,33 @@ type spawn_join = {
 let build_spawn_join spawn_tree join_permutation join_tree domain_or =
   { spawn_tree; join_permutation; join_tree; domain_or }
 
+(* Ensure that any domain is higher up in the join tree than all its
+   threads, so that we cannot have a thread waiting on its domain even
+   indirectly *)
+let fix_permutation sj =
+  let rec dom_of_thd i =
+    let candidate = sj.spawn_tree.(i) in
+    if candidate = -1 || sj.domain_or.(candidate)
+    then candidate
+    else dom_of_thd candidate
+  in
+  (* Printf.printf "Before fixing: %s\n%!" (show_spawn_join sj) ; *)
+  for i = 0 to size-1 do
+    if not sj.domain_or.(i) then
+      let i' = sj.join_permutation.(i) in
+      let d = dom_of_thd i in
+      let d' = if d = -1 then d else sj.join_permutation.(d) in
+      if d' > i' then swap sj.join_permutation i d
+  done ;
+  (* Printf.printf "After fixing: %s\n%!" (show_spawn_join sj) ; *)
+  sj
+
+let build_fix_spawn_join spawn_tree join_permutation join_tree domain_or =
+  fix_permutation { spawn_tree; join_permutation; join_tree; domain_or }
+
 let gen_spawn_join =
   let open Gen in
-  build_spawn_join <$> tree <*> permutation <*> tree <*> array_size (pure size) bool
+  build_fix_spawn_join <$> tree <*> permutation <*> tree <*> array_size (pure size) bool
 
   (* let* st = tree *)
   (* and* jp = permutation *)
@@ -104,7 +128,7 @@ let join_one hdls i =
            (* we cannot join a domain from a thread running on it *)
         then ( Domain.join h ;
                hdls.handles.(i) <- NoHdl )
-        else Printf.printf "Skipping one join\n%!"
+        (* else Printf.printf "Skipping one join\n%!" *)
     | ThreadHdl h -> ( Thread.join h ;
                        hdls.handles.(i) <- NoHdl ) )
   (* ; Printf.printf "Joined %d\n%!" i *)
@@ -132,7 +156,7 @@ and run_node sj hdls i () =
   done
 
 let run_all_nodes sj =
-  Printf.printf "Test %s\n%!" (show_spawn_join sj) ;
+  (* Printf.printf "Test %s\n%!" (show_spawn_join sj) ; *)
   let hdls = { handles = Array.make size NoHdl;
                available = Array.init size (fun _ -> Semaphore.Binary.make false) } in
   spawn_one sj hdls 0;
