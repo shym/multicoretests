@@ -22,6 +22,7 @@ jobs:
           opam-repositories: |
             default: https://github.com/ocaml/opam-repository.git
             alpha: https://github.com/kit-ty-kate/opam-alpha-repository.git
+          cache-prefix: macos-5.0.0~alpha1
           opam-depext: false
 
       - run: opam install . --deps-only --with-test
