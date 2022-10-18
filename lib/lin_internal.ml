@@ -38,7 +38,7 @@ struct
       Iter.map (fun i -> a.(length - i - 1)) (Shrink.int length)
 end
 
-module type CmdSpec = sig
+module type ExpandedSpec = sig
   type t
   (** The type of the system under test *)
 
@@ -86,9 +86,9 @@ module type CmdSpec = sig
       [opt] indicates the index to store the result. *)
 end
 
-(** A functor to create Domain and Thread test setups.
+(** A functor to create test setups, for all backends (Domain, Thread and Effect).
     We use it below, but it can also be used independently *)
-module MakeDomThr(Spec : CmdSpec)
+module Make(Spec : ExpandedSpec)
   = struct
 
   (* plain interpreter of a cmd list *)
@@ -224,23 +224,16 @@ module MakeDomThr(Spec : CmdSpec)
                  if Spec.equal_res res2 (Spec.run c2 seq_sut')
                  then check_seq_cons array_size pref cs1 cs2' seq_sut' (c2::seq_trace)
                  else (cleanup seq_sut' pref cs1 cs2; false))
-end
 
-(** A functor to create all three (Domain, Thread, and Effect) test setups.
-    The result [include]s the output module from the [MakeDomThr] functor above *)
-module Make(Spec : CmdSpec)
-= struct
+  (* Linearizability test *)
+  let lin_test ~rep_count ~count ~retries ~name ~lin_prop =
+    let arb_cmd_triple = arb_cmds_par 20 12 in
+    Test.make ~count ~retries ~name
+      arb_cmd_triple (repeat rep_count lin_prop)
 
-  module FirstTwo = MakeDomThr(Spec)
-  include FirstTwo
-
-  (* Linearizability test based on [Domain], [Thread], or [Effect] *)
-  let lin_test ~count ~name (lib : [ `Domain | `Thread | `Effect ]) =
-    let seq_len,par_len = 20,12 in
-    match lib with
-
-  (* Negative linearizability test based on [Domain], [Thread], or [Effect] *)
-  let neg_lin_test ~count ~name (lib : [ `Domain | `Thread | `Effect ]) =
-    let seq_len,par_len = 20,12 in
-    match lib with
+  (* Negative linearizability test *)
+  let neg_lin_test ~rep_count ~count ~retries ~name ~lin_prop =
+    let arb_cmd_triple = arb_cmds_par 20 12 in
+    Test.make_neg ~count ~retries ~name
+      arb_cmd_triple (repeat rep_count lin_prop)
 end

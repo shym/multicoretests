@@ -1,7 +1,14 @@
+open Lin_base
+
+module Make (Spec : Lin_common.Spec) = struct
+  module ExpandedSpec = Lin_common.ExpandSpec(Spec)
+  module M = Lin_internal.Make(ExpandedSpec)
+  include M
+
   (* operate over arrays to avoid needless allocation underway *)
   let interp sut cs =
     let cs_arr = Array.of_list cs in
-    let res_arr = Array.map (fun c -> Domain.cpu_relax(); Spec.run c sut) cs_arr in
+    let res_arr = Array.map (fun c -> Domain.cpu_relax(); ExpandedSpec.run c sut) cs_arr in
     List.combine cs (Array.to_list res_arr)
 
   (* Linearizability property based on [Domain] and an Atomic flag *)
@@ -18,19 +25,14 @@
     cleanup sut pref_obs obs1 obs2;
     let seq_sut = init_sut array_size in
     check_seq_cons array_size pref_obs obs1 obs2 seq_sut []
-      || Test.fail_reportf "  Results incompatible with sequential execution\n\n%s"
-         @@ print_triple_vertical ~fig_indent:5 ~res_width:35 ~init_cmd:init_cmd_ret
-              (fun (c,r) -> Printf.sprintf "%s : %s" (show_cmd c) (Spec.show_res r))
+      || QCheck.Test.fail_reportf "  Results incompatible with sequential execution\n\n%s"
+         @@ Util.print_triple_vertical ~fig_indent:5 ~res_width:35 ~init_cmd:init_cmd_ret
+              (fun (c,r) -> Printf.sprintf "%s : %s" (show_cmd c) (ExpandedSpec.show_res r))
               (pref_obs,obs1,obs2)
 
-    | `Domain ->
-        let arb_cmd_triple = arb_cmds_par seq_len par_len in
-        let rep_count = 50 in
-        Test.make ~count ~retries:3 ~name
-          arb_cmd_triple (repeat rep_count lin_prop_domain)
+  let lin_test ~count ~name =
+    lin_test ~rep_count:50 ~count ~retries:3 ~name ~lin_prop:lin_prop_domain
 
-    | `Domain ->
-        let arb_cmd_triple = arb_cmds_par seq_len par_len in
-        let rep_count = 50 in
-        Test.make_neg ~count ~retries:3 ~name
-          arb_cmd_triple (repeat rep_count lin_prop_domain)
+  let neg_lin_test ~count ~name =
+    neg_lin_test ~rep_count:50 ~count ~retries:3 ~name ~lin_prop:lin_prop_domain
+end

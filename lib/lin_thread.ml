@@ -1,3 +1,10 @@
+open Lin_base
+
+module Make (Spec : Lin_common.Spec) = struct
+  module ExpandedSpec = Lin_common.ExpandSpec(Spec)
+  module M = Lin_internal.Make(ExpandedSpec)
+  include M
+
   (* Note: On purpose we use
      - a non-tail-recursive function and
      - an (explicit) allocation in the loop body
@@ -6,7 +13,7 @@
     | [] -> []
     | c::cs ->
         Thread.yield ();
-        let res = Spec.run c sut in
+        let res = ExpandedSpec.run c sut in
         (c,res)::interp_thread sut cs
 
   (* Linearizability property based on [Thread] *)
@@ -24,19 +31,14 @@
       let seq_sut = init_sut array_size in
       (* we reuse [check_seq_cons] to linearize and interpret sequentially *)
       check_seq_cons array_size pref_obs !obs1 !obs2 seq_sut []
-      || Test.fail_reportf "  Results incompatible with sequential execution\n\n%s"
-         @@ print_triple_vertical ~fig_indent:5 ~res_width:35 ~init_cmd:init_cmd_ret
-              (fun (c,r) -> Printf.sprintf "%s : %s" (show_cmd c) (Spec.show_res r))
+      || QCheck.Test.fail_reportf "  Results incompatible with sequential execution\n\n%s"
+         @@ Util.print_triple_vertical ~fig_indent:5 ~res_width:35 ~init_cmd:init_cmd_ret
+              (fun (c,r) -> Printf.sprintf "%s : %s" (show_cmd c) (ExpandedSpec.show_res r))
               (pref_obs,!obs1,!obs2))
 
-    | `Thread ->
-        let arb_cmd_triple = arb_cmds_par seq_len par_len in
-        let rep_count = 100 in
-        Test.make ~count ~retries:5 ~name
-          arb_cmd_triple (repeat rep_count lin_prop_thread)
+  let lin_test ~count ~name =
+    lin_test ~rep_count:100 ~count ~retries:5 ~name ~lin_prop:lin_prop_thread
 
-    | `Thread ->
-        let arb_cmd_triple = arb_cmds_par seq_len par_len in
-        let rep_count = 100 in
-        Test.make_neg ~count ~retries:5 ~name
-          arb_cmd_triple (repeat rep_count lin_prop_thread)
+  let neg_lin_test ~count ~name =
+    neg_lin_test ~rep_count:100 ~count ~retries:5 ~name ~lin_prop:lin_prop_thread
+end
