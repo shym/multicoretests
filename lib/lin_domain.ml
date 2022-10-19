@@ -1,7 +1,6 @@
 open Lin_base
 
-module Make (Spec : Lin_common.Spec) = struct
-  module ExpandedSpec = Lin_common.ExpandSpec(Spec)
+module Make_internal (ExpandedSpec : Lin_internal.ExpandedSpec) = struct
   module M = Lin_internal.Make(ExpandedSpec)
   include M
 
@@ -36,3 +35,5 @@ module Make (Spec : Lin_common.Spec) = struct
   let neg_lin_test ~count ~name =
     neg_lin_test ~rep_count:50 ~count ~retries:3 ~name ~lin_prop:lin_prop_domain
 end
+
+module Make (Spec : Lin_common.Spec) = Make_internal(Lin_common.ExpandSpec(Spec))

@@ -32,7 +32,7 @@ module Lazy :
 
 module LBase =
 struct
-  open Lin
+  open Lin_base.Lin_internal
   type cmd =
     | Force of Var.t
     | Force_val of Var.t
@@ -93,15 +93,15 @@ struct
 end
 
 
-module LTlazy    = Lin.Make(struct
+module LTlazy    = Lin_domain.Make_internal(struct
     include LBase
     let init () = lazy (work ())
   end)
-module LTfromval = Lin.Make(struct
+module LTfromval = Lin_domain.Make_internal(struct
     include LBase
     let init () = Lazy.from_val 42
   end)
-module LTfromfun = Lin.Make(struct
+module LTfromfun = Lin_domain.Make_internal(struct
     include LBase
     let init () = Lazy.from_fun work
   end)
@@ -110,7 +110,7 @@ Util.set_ci_printing ()
 ;;
 QCheck_base_runner.run_tests_main
   (let count = 100 in
-   [LTlazy.neg_lin_test       `Domain ~count ~name:"Lin Lazy test with Domain";
-    LTfromval.lin_test        `Domain ~count ~name:"Lin Lazy test with Domain from_val";
-    LTfromfun.neg_lin_test    `Domain ~count ~name:"Lin Lazy test with Domain from_fun";
+   [LTlazy.neg_lin_test       ~count ~name:"Lin Lazy test with Domain";
+    LTfromval.lin_test        ~count ~name:"Lin Lazy test with Domain from_val";
+    LTfromfun.neg_lin_test    ~count ~name:"Lin Lazy test with Domain from_fun";
    ])

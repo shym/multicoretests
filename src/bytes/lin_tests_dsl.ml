@@ -6,7 +6,8 @@ module BConf = struct
   let init () = Bytes.make 42 '0'
   let cleanup _ = ()
 
-  open Lin_api
+  open Lin_base
+
   let int = nat_small
 (*let int = int_bound 10*)
 
@@ -29,11 +30,12 @@ module BConf = struct
     val_ "Bytes.index_from"  Bytes.index_from  (t @-> int @-> char @-> returning_or_exc int)]
 end
 
-module BT = Lin_api.Make(BConf)
+module BT_domain = Lin_domain.Make(BConf)
+module BT_thread = Lin_thread.Make(BConf)
 ;;
 Util.set_ci_printing ()
 ;;
 QCheck_base_runner.run_tests_main [
-  BT.neg_lin_test `Domain ~count:1000 ~name:"Lin_api Bytes test with Domain";
-  BT.lin_test     `Thread ~count:250  ~name:"Lin_api Bytes test with Thread";
+  BT_domain.neg_lin_test ~count:1000 ~name:"Lin_api Bytes test with Domain";
+  BT_thread.lin_test     ~count:250  ~name:"Lin_api Bytes test with Thread";
 ]

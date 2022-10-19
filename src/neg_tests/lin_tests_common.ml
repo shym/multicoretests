@@ -24,7 +24,7 @@ module Sut_int64 =
 end
 
 module RConf_int = struct
-  open Lin
+  open Lin_base.Lin_internal
 
   type t = int ref
 
@@ -76,7 +76,7 @@ end
 
 
 module RConf_int64 = struct
-  open Lin
+  open Lin_base.Lin_internal
 
   type t = int64 ref
 
@@ -126,8 +126,8 @@ module RConf_int64 = struct
   let cleanup _ = ()
 end
 
-module RT_int = Lin.Make(RConf_int)
-module RT_int64 = Lin.Make(RConf_int64)
+module RT_int_domain = Lin_domain.Make_internal(RConf_int)
+module RT_int64_domain = Lin_domain.Make_internal(RConf_int64)
 
 
 (** ********************************************************************** *)
@@ -141,6 +141,8 @@ module CLConf (T : sig
                      val shrink : t Shrink.t
                    end) =
 struct
+  module Lin = Lin_base.Lin_internal
+
   type t = T.t CList.conc_list Atomic.t
   type int' = T.t
   let gen_int' = Gen.(map T.of_int nat)
@@ -186,5 +188,5 @@ module Int64 = struct
   include Stdlib.Int64
   let shrink = Shrink.int64
 end
-module CLT_int = Lin.Make(CLConf (Int))
-module CLT_int64 = Lin.Make(CLConf (Int64))
+module CLT_int_domain = Lin_domain.Make_internal(CLConf (Int))
+module CLT_int64_domain = Lin_domain.Make_internal(CLConf (Int64))

@@ -10,7 +10,7 @@ struct
  (* note to self:
     - generate one t_var per input [t] parameter and
     - record [Env.next] for each resulting [t] in an option *)
-  open Lin
+  open Lin_base.Lin_internal
   type cmd =
     | Length of Var.t
     | Get of Var.t * int
@@ -113,10 +113,10 @@ struct
   let cleanup _ = ()
 end
 
-module AT = Lin.Make(AConf)
+module AT_domain = Lin_domain.Make_internal(AConf)
 ;;
 Util.set_ci_printing ()
 ;;
 QCheck_base_runner.run_tests_main [
-  AT.neg_lin_test `Domain ~count:1000 ~name:"Lin Array test with Domain";
+  AT_domain.neg_lin_test ~count:1000 ~name:"Lin Array test with Domain";
 ]

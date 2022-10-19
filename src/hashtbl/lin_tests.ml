@@ -1,5 +1,5 @@
 open QCheck
-open Lin
+open Lin_base.Lin_internal
 
 (** ********************************************************************** *)
 (**                      Tests of thread-unsafe [Hashtbl]                  *)
@@ -95,10 +95,10 @@ struct
   let cleanup _ = ()
 end
 
-module HT = Lin.Make(HConf)
+module HT_domain = Lin_domain.Make_internal(HConf)
 ;;
 Util.set_ci_printing ()
 ;;
 QCheck_base_runner.run_tests_main [
-  HT.neg_lin_test     `Domain ~count:1000 ~name:"Lin Hashtbl test with Domain";
+  HT_domain.neg_lin_test ~count:1000 ~name:"Lin Hashtbl test with Domain";
 ]
