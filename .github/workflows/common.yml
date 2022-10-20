@@ -15,20 +15,6 @@ on:
         description: 'Timeout'
         type: number
         default: 180
-  workflow_dispatch:
-    inputs:
-      runs_on:
-        description: 'Type of machine + OS on which to run the tests'
-        type: string
-        default: 'ubuntu-latest'
-      compiler:
-        description: 'Compiler to use'
-        type: string
-        default: 'ocaml-base-compiler.5.0.0~beta1'
-      timeout:
-        description: 'Timeout'
-        type: number
-        default: 360
       only_test:
         description: 'Only test to run (eg “src/array/lin_tests.exe”); whole suite is run if empty'
         type: string
