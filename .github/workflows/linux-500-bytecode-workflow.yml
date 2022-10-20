@@ -8,3 +8,5 @@ jobs:
     with:
       compiler: 'ocaml-variants.5.0.0~beta1+options,ocaml-option-bytecode-only'
       timeout: 360
+      only_test: 'src/neg_tests/effect_lin_tests_dsl.exe'
+      seed: 134165266
