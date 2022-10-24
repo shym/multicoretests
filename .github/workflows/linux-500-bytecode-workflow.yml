@@ -10,3 +10,4 @@ jobs:
       timeout: 360
       only_test: 'src/neg_tests/effect_lin_tests_dsl.exe'
       seed: 134165266
+      repeats: 50
