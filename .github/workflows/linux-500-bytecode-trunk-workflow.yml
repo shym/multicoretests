@@ -1,4 +1,4 @@
-name: Linux 5.0.0+trunk bytecode
+name: Last bytecode revision without issue
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -6,8 +6,9 @@ jobs:
   build:
     uses: ./.github/workflows/common.yml
     with:
-      compiler: 'ocaml-variants.5.0.0+trunk,ocaml-option-bytecode-only'
+      compiler: 'ocaml-variants.4.14.0+options,ocaml-option-bytecode-only'
+      compiler_commit: '645a00eed1430d713285cb85953f8bf0a96ba930'
       timeout: 360
-      only_test: 'src/neg_tests/effect_lin_tests_dsl.exe'
+      only_test: 'src/neg_tests/effect_lin_tests_dsl.bc'
       seed: 134165266
       repeats: 10
