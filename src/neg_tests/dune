@@ -63,6 +63,7 @@
 (executable
  (name effect_lin_tests_dsl)
  (modules effect_lin_tests_dsl)
+ (modes byte native)
  (flags (:standard -w -27))
  (libraries lin_tests_common_dsl))
 
