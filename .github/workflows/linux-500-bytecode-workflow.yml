@@ -28,9 +28,7 @@ jobs:
           eval $(opam env --set-switch --switch=bug-repro)
           git clone https://github.com/ocaml/ocaml.git
           cd ocaml
-          git checkout 5.0.0-beta1
-          opam install -y ocaml-option-bytecode-only .
-          eval $(opam env)
-          opam install ocamlfind qcheck-core
-          cd ..
-          make look-for-seed
+          git bisect start
+          git bisect good 5.0.0-alpha1
+          git bisect bad 5.0.0-beta1
+          git bisect run ../bisect-runner
