@@ -1,14 +1,36 @@
-name: First bytecode revision with issue
+name: Run a few tests
 
-on: [push, pull_request, workflow_dispatch]
+on: [push, workflow_dispatch]
 
 jobs:
   build:
-    uses: ./.github/workflows/common.yml
-    with:
-      compiler: 'ocaml-variants.4.14.0+options,ocaml-option-bytecode-only'
-      compiler_commit: 'ce080daecc0c6c7ccd5edc09f7c224c78b83b992'
-      timeout: 360
-      only_test: 'src/neg_tests/effect_lin_tests_dsl.bc'
-      seed: 134165266
-      repeats: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install OCaml compiler from package
+        run: sudo apt-get install -y ocaml
+
+      - name: Install OCaml compiler
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 'ocaml-system'
+          opam-repositories: |
+            default: https://github.com/ocaml/opam-repository.git
+            alpha: https://github.com/kit-ty-kate/opam-alpha-repository.git
+          opam-depext: false
+
+      - name: Test compilers
+        run: |
+          opam switch create bug-repro --empty
+          eval $(opam env --set-switch --switch=bug-repro)
+          git clone https://github.com/ocaml/ocaml.git
+          cd ocaml
+          git checkout 5.0.0-beta1
+          opam install -y ocaml-option-bytecode-only .
+          eval $(opam env)
+          opam install ocamlfind qcheck-core
+          cd ..
+          make look-for-seed
