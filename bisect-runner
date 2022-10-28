@@ -1,13 +1,25 @@
 #!/bin/sh
 
 set -x
-opam install -y . ocamlfind qcheck-core
-make -C .. clean look-for-seed
+opam install -y ocaml-option-bytecode-only . ocamlfind qcheck-core || exit 125 # cannot test that commit
+eval $(opam env)
+ocamlc --version
+ocamlrun --version
+make -C .. clean all
+echo
+echo Start: look for a segfault
+( set -e; export CI=true; for i in `seq 200`; do ocamlrun ../effect_lin_tests_dsl.bc -v; done )
 case $? in
-  0) exit 0
+  0)
+    echo End: didn’t find a segfault
+    exit 0
     ;;
-  2) exit 1
+  139) # segfault
+    echo End: segfault found!
+    exit 1
     ;;
-  *) exit 128 # stop bisection, we did not get the expected failure
+  *)
+    echo End: unexpected failure, aborting bisection
+    exit 128
     ;;
 esac

@@ -11,9 +11,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install OCaml compiler from package
-        run: sudo apt-get install -y ocaml
+        run: sudo DEBIAN_FRONTEND=noninteractive apt install -yq --no-install-recommends ocaml
 
-      - name: Install OCaml compiler
+      - name: Install opam (with the system ocaml initially)
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: 'ocaml-system'
@@ -22,7 +22,7 @@ jobs:
             alpha: https://github.com/kit-ty-kate/opam-alpha-repository.git
           opam-depext: false
 
-      - name: Test compilers
+      - name: Run bisection
         run: |
           opam switch create bug-repro --empty
           eval $(opam env --set-switch --switch=bug-repro)
