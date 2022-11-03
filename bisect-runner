@@ -1,14 +1,41 @@
-#!/bin/sh
+#!/bin/bash
+# bash because we need pipefail
+
+MULTICORETESTSDIR=${MULTICORETESTSDIR:-..}
 
 set -x
 opam install -y ocaml-option-bytecode-only . ocamlfind qcheck-core || exit 125 # cannot test that commit
 eval $(opam env)
 ocamlc --version
 ocamlrun --version
-make -C .. clean all
+make -C $MULTICORETESTSDIR clean all
 echo
 echo Start: look for a segfault
-( set -e; export CI=true; for i in `seq 200`; do ocamlrun ../effect_lin_tests_dsl.bc -v; done )
+( set +x -o pipefail ;
+  export CI=true ;
+  for i in $(seq 20000); do
+    if seed="$(ocamlrun $MULTICORETESTSDIR/effect_lin_tests_dsl.bc -v | awk '/random seed/ { print $3 }')"; then
+      continue # nothing to see
+    else
+      res="$?"
+      case "$res" in
+        135|139)
+          # SIGBUS or SIGSEGV: is it reproducible?
+          if ocamlrun $MULTICORETESTSDIR/effect_lin_tests_dsl.bc -v -s "$seed"; then
+            printf 'Seed %s not robust\n' "$seed";
+          else
+            printf 'Found good seed %s!\n' "$seed"
+            exit 139
+          fi
+          ;;
+        *)
+          printf 'Seed %s result: %s\n' "$seed" "$res";
+          exit "$res"
+          ;;
+      esac
+    fi
+  done )
+
 case $? in
   0)
     echo End: didn’t find a segfault
