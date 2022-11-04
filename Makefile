@@ -16,11 +16,7 @@ effect_lin_tests_dsl.bc: lib/util.cmo lib/lin.cmo lib/lin_api.cmo src/neg_tests/
 	$(OCAMLFIND) ocamlc -c -g $< -o $@ -package qcheck-core,qcheck-core.runner -I lib -I src/neg_tests -thread
 
 look-for-seed: effect_lin_tests_dsl.bc
-	set -e;                 \
-	export CI=true;         \
-	for i in `seq 200`; do  \
-		$(OCAMLRUN) $< -v; \
-	done
+	./look-for-seed.sh
 
 .deps:
 	$(OCAMLDEP) -I lib -I src/neg_tests lib/* lib/* src/neg_tests/* > $@
