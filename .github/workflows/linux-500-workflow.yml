@@ -5,4 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     uses: ./.github/workflows/common.yml
-    # default
+    with:
+      only_test: 'src/ephemeron/stm_tests.exe'
+      seed: '63947905'
+      repeats: 5

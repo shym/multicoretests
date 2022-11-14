@@ -7,3 +7,6 @@ jobs:
     uses: ./.github/workflows/common.yml
     with:
       runs_on: 'macos-latest'
+      only_test: 'src/ephemeron/stm_tests.exe'
+      seed: '63947905'
+      repeats: 5

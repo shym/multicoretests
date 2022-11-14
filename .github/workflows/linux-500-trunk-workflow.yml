@@ -7,3 +7,6 @@ jobs:
     uses: ./.github/workflows/common.yml
     with:
       compiler: 'ocaml-variants.5.0.0+trunk'
+      only_test: 'src/ephemeron/stm_tests.exe'
+      seed: '63947905'
+      repeats: 5
