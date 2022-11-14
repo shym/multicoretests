@@ -75,12 +75,12 @@
 (library
  (name lin_tests_common_dsl)
  (modules lin_tests_common_dsl)
- (libraries lin CList))
+ (libraries CList qcheck-lin.domain))
 
 (library
  (name lin_tests_common)
  (modules lin_tests_common)
- (libraries lin CList)
+ (libraries CList qcheck-lin.domain)
  (preprocess (pps ppx_deriving_qcheck ppx_deriving.show ppx_deriving.eq)))
 
 (executables
@@ -93,7 +93,7 @@
  (name effect_lin_tests_dsl)
  (modules effect_lin_tests_dsl)
  (flags (:standard -w -27))
- (libraries lin_tests_common_dsl))
+ (libraries lin_tests_common_dsl qcheck-lin.effect))
 
 (rule
  (alias runtest)
@@ -113,11 +113,17 @@
  (deps effect_lin_tests_dsl.exe)
  (action (run ./%{deps} --verbose)))
 
-(executables
- (names domain_lin_tests thread_lin_tests)
- (modules domain_lin_tests thread_lin_tests)
+(executable
+ (name domain_lin_tests)
+ (modules domain_lin_tests)
  (flags (:standard -w -27))
  (libraries lin_tests_common))
+
+(executable
+ (name thread_lin_tests)
+ (modules thread_lin_tests)
+ (flags (:standard -w -27))
+ (libraries lin_tests_common qcheck-lin.thread))
 
 (executable
  (name effect_lin_tests)
