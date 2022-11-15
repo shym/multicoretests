@@ -8,3 +8,5 @@ jobs:
     with:
       compiler: 'ocaml-variants.5.0.0+trunk'
       compiler_branch: '5.0'
+      only_test: 'src/domain/domain_spawntree.exe'
+      repeats: 250
