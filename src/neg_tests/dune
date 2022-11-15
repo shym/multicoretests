@@ -14,7 +14,7 @@
    domain_lin_tests.exe ;; currently not run on CI
    effect_lin_tests.exe ;; currently not run on CI
    thread_lin_tests.exe
-   ;; Lin_api tests
+   ;; Lin DSL tests
    domain_lin_tests_dsl.exe
    effect_lin_tests_dsl.exe
    thread_lin_tests_dsl.exe)) ;; currently not run on CI
