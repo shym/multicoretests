@@ -9,5 +9,5 @@ jobs:
       compiler: 'ocaml-variants.5.0.0~beta1+options,ocaml-option-bytecode-only'
       timeout: 360
       only_test: 'src/ephemeron/stm_tests.exe'
-      seed: '63947905'
+      seed: '382251382'
       repeats: 5
