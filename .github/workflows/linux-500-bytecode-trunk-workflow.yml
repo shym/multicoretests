@@ -10,4 +10,5 @@ jobs:
       compiler_branch: '5.0'
       timeout: 360
       only_test: 'src/domain/domain_spawntree.exe'
-      repeats: '50'
+      seed: '357883174'
+      repeats: '5'
