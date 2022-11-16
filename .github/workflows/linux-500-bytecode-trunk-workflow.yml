@@ -10,5 +10,4 @@ jobs:
       compiler_branch: '5.0'
       timeout: 360
       only_test: 'src/ephemeron/stm_tests.exe'
-      seed: '385206433'
-      repeats: '30'
+      repeats: '200'
