@@ -78,11 +78,16 @@ jobs:
 
       - name: Run only one test
         run: |
+          $ErrorActionPreference = 'Continue'
+          $failures = 0
           for($i = 1; $i -le "${env:REPEATS}"; $i++) {
             if("${env:SEED}" -eq "") {
               opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v
+              if($? -eq 0) { $failures += 1 }
             } else {
               opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v -s "${env:SEED}"
+              if($? -eq 0) { $failures += 1 }
             }
           }
+          echo "Test failed $failures times"
         if: inputs.only_test != ''
