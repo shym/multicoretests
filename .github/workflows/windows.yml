@@ -38,6 +38,7 @@ jobs:
           cd ocaml
           curl https://github.com/shym/ocaml/commit/cca99d36bc5326dbe48fd9aaa10357b7de869bbc.patch | git -c user.name=CI -c user.email="bot@ci.com" am
           opam install --switch=ci .
+          git log
           cd ..
           rmdir -Recurse -Force ocaml
 
