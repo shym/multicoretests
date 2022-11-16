@@ -77,12 +77,12 @@ jobs:
         if: inputs.only_test == ''
 
       - name: Run only one test
-        run: >
+        run: |
           for($i = 1; $i -le "${env:REPEATS}"; $i++) {
             if("${env:SEED}" -eq "") {
               opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v
             } else {
               opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v -s "${env:SEED}"
             }
-          done
+          }
         if: inputs.only_test != ''
