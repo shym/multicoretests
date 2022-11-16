@@ -5,3 +5,7 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     uses: ./.github/workflows/windows.yml
+    with:
+      only_test: 'src/threadomain/threadomain.exe'
+      seed: '417531959'
+      repeats: '10'

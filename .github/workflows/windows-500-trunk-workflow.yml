@@ -7,3 +7,6 @@ jobs:
     uses: ./.github/workflows/windows.yml
     with:
       compiler: '5.0'
+      only_test: 'src/threadomain/threadomain.exe'
+      seed: '417531959'
+      repeats: '10'
