@@ -104,7 +104,7 @@ jobs:
         if: inputs.only_test == ''
 
       - name: Run the test suite
-        run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
+        run: opam exec -- dune runtest -j1 --no-buffer --display=verbose --cache=disabled --error-reporting=twice
         if: inputs.only_test == ''
 
       - name: Run only one test
