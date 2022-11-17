@@ -7,5 +7,7 @@ jobs:
     uses: ./.github/workflows/common.yml
     with:
       compiler: 'ocaml-variants.5.0.0+trunk,ocaml-option-bytecode-only'
-      compiler_branch: '5.0'
       timeout: 360
+      only_test: 'src/ephemeron/stm_tests.exe'
+      repeats: '200'
+      compiler_commit: 'bec7e34745259bda3b68ec618e4b77d6dd1082f8'
