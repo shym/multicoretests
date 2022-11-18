@@ -10,4 +10,5 @@ jobs:
       timeout: 360
       only_test: 'src/ephemeron/stm_tests.exe'
       repeats: '200'
+      repeats_failfast: true
       compiler_commit: 'bec7e34745259bda3b68ec618e4b77d6dd1082f8'
