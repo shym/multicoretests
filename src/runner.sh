@@ -3,13 +3,20 @@
 # All lines end as comments since bash on Windows CI seems to conjure
 # some '\r' it doesn’t like into existence
 test="$1"                                                             #
+warning() {                                                           #
 if [ "$CI" = true ] ; then                                            #
-  WARN_PREFIX="::warning::"                                           #
-  ERR_PREFIX="::error::"                                              #
+  printf '\n::warning title=%s in %s/%s::' "$1" "${PWD##*/}" "$test"  #
 else                                                                  #
-  WARN_PREFIX="Warning: "                                             #
-  ERR_PREFIX="Error: "                                                #
+  printf '\nWarning: %s in %s/%s' "$1" "${PWD##*/}" "$test"           #
 fi                                                                    #
+}                                                                     #
+error() {                                                             #
+if [ "$CI" = true ] ; then                                            #
+  printf '\n::error title=%s in %s/%s::' "$1" "${PWD##*/}" "$test"    #
+else                                                                  #
+  printf '\nError: %s in %s/%s' "$1" "${PWD##*/}" "$test"             #
+fi                                                                    #
+}                                                                     #
                                                                       #
 if [[ "$2" = "" ]] ; then                                             #
   printf '\n\nStarting "./%s --verbose" in %s\n' "$test" "${PWD##*/}" #
@@ -26,23 +33,23 @@ case "$result" in                                                     #
     exit 0                                                            #
     ;;                                                                #
   1)                                                                  #
-    echo "${WARN_PREFIX}Failure in test $test (${PWD##*/})"           #
+    warning "Test failure"                                            #
     exit 1                                                            #
     ;;                                                                #
   139)                                                                #
-    echo "${ERR_PREFIX}SIGSEGV in test $test (${PWD##*/})"            #
+    error SIGSEGV                                                     #
     kill -SIGSEGV $$                                                  #
     ;;                                                                #
   135)                                                                #
-    echo "${ERR_PREFIX}SIGBUS in test $test (${PWD##*/})"             #
+    error SIGBUS                                                      #
     kill -SIGBUS $$                                                   #
     ;;                                                                #
   137)                                                                #
-    echo "${ERR_PREFIX}SIGKILL in test $test (${PWD##*/})"            #
+    error SIGKILL                                                     #
     kill -SIGKILL $$                                                  #
     ;;                                                                #
   *)                                                                  #
-    echo "${ERR_PREFIX}Result $result in test $test (${PWD##*/})"     #
+    error "Result $result"                                            #
     exit "$result"                                                    #
     ;;                                                                #
 esac                                                                  #
