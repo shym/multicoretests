@@ -78,45 +78,6 @@ jobs:
           dune-cache: true
           cache-prefix: ${{ steps.compute_prefix.outputs.cache_prefix }}
 
-      - name: Override compiler to a particular commit
-        if: inputs.compiler_commit != ''
-        run: |
-          wget "https://github.com/ocaml/ocaml/archive/$OCAML_COMPILER_COMMIT.tar.gz"
-          tar xf "$OCAML_COMPILER_COMMIT.tar.gz"
-          cd "ocaml-$OCAML_COMPILER_COMMIT"
-          opam --cli=2.1 install -y --update-invariant .
-          eval $(opam env)
-          ocamlc -v
-
-      - name: Install Multicore Tests dependencies
-        run: |
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            opam install . --deps-only --with-test -j1
-          else
-            opam install . --deps-only --with-test
-          fi
-
-      - name: Set QCHECK_MSG_INTERVAL to reduce noise and keep CI logs tidy
-        run: echo "QCHECK_MSG_INTERVAL=60" >> $GITHUB_ENV
-
-      - name: Build the test suite
-        run: opam exec -- dune build
-        if: inputs.only_test == ''
-
       - name: Run the test suite
         run: opam exec -- dune build @src/runner-test/runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
         if: inputs.only_test == ''
-
-      - name: Run only one test
-        run: |
-          failures=0
-          for i in `seq "$REPEATS"`; do
-            if [ -n "$SEED" ]; then
-              opam exec -- dune exec "$ONLY_TEST" -- -v -s "$SEED" || failures=$((failures + 1))
-            else
-              opam exec -- dune exec "$ONLY_TEST" -- -v || failures=$((failures + 1))
-            fi
-          done
-          echo "Test failed $failures times"
-          [ "$failures" = 0 ]
-        if: inputs.only_test != ''

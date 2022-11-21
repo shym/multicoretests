@@ -47,47 +47,13 @@ jobs:
           opam-pin: false
           opam-depext: false
 
-      - name: Build and install the OCaml ${{ inputs.compiler }} compiler in a `ci` switch
-        run: |
-          opam switch create ci --empty --no-switch --repositories=default,override,upstream,alpha
-          git clone https://github.com/ocaml/ocaml -b $Env:COMPILER --depth=1 --recurse-submodules
-          cd ocaml
-          curl https://github.com/shym/ocaml/commit/cca99d36bc5326dbe48fd9aaa10357b7de869bbc.patch | git -c user.name=CI -c user.email="bot@ci.com" am
-          opam install --switch=ci .
-          git log
-          cd ..
-          rmdir -Recurse -Force ocaml
-
       - name: Show environment
         run: |
-          opam exec --switch=ci -- ocamlopt --version
-          opam config list --switch=ci
-
-      - name: Install Multicore Tests dependencies
-        run: |
-          opam pin --switch=ci add "https://github.com/shym/ocamlfind.git#fix-win"
-          opam install --switch=ci . --deps-only --with-test
-
-      - name: Build the test suite
-        run: opam exec --switch=ci -- dune build
-        if: inputs.only_test == ''
+          opam exec -- ocamlopt --version
+          opam config list
 
       - name: Run the test suite
-        run: opam exec --switch=ci -- dune build @src/runner-test/runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
-        if: inputs.only_test == ''
-
-      - name: Run only one test
         run: |
-          $ErrorActionPreference = 'Continue'
-          $failures = 0
-          for($i = 1; $i -le "${env:REPEATS}"; $i++) {
-            if("${env:SEED}" -eq "") {
-              opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v
-              if($? -eq 0) { $failures += 1 }
-            } else {
-              opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v -s "${env:SEED}"
-              if($? -eq 0) { $failures += 1 }
-            }
-          }
-          echo "Test failed $failures times"
-        if: inputs.only_test != ''
+          opam install dune
+          opam exec -- dune build @src/runner-test/runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
+        if: inputs.only_test == ''
