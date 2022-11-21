@@ -1,0 +1,37 @@
+;; Test of the runner.sh
+
+(rule
+ (alias runtest)
+ (package multicoretests)
+ (deps test.sh)
+ (action (bash "%{dep:../runner.sh} %{deps} true")))
+
+(rule
+ (alias runtest)
+ (package multicoretests)
+ (deps test.sh)
+ (action (bash "%{dep:../runner.sh} %{deps} false")))
+
+(rule
+ (alias runtest)
+ (package multicoretests)
+ (deps test.sh)
+ (action (bash "%{dep:../runner.sh} %{deps} kill")))
+
+(rule
+ (alias runtest)
+ (package multicoretests)
+ (deps test.sh)
+ (action (bash "%{dep:../runner.sh} %{deps} segv")))
+
+(rule
+ (alias runtest)
+ (package multicoretests)
+ (deps test.sh)
+ (action (bash "%{dep:../runner.sh} %{deps} bus")))
+
+(rule
+ (alias runtest)
+ (package multicoretests)
+ (deps test.sh)
+ (action (bash "%{dep:../runner.sh} %{deps} term")))
