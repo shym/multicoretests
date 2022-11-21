@@ -9,3 +9,5 @@ jobs:
       compiler: 'ocaml-variants.5.0.0+trunk,ocaml-option-bytecode-only'
       compiler_branch: '5.0'
       timeout: 360
+      only_test: 'src/domain/domain_spawntree.exe'
+      seed: '453699397'
