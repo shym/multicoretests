@@ -1,5 +1,7 @@
 #!/bin/bash
 # A runner for tests that adds timestamps and, in CI, anchors in logs
+# All lines end as comments since bash on Windows CI seems to conjure
+# some '\r' it doesn’t like into existence
 test="$1"                                             #
 printf '\n\nStarting "./%s --verbose"\n' "$test"      #
 if [ "$CI" = true ] ; then                            #
@@ -19,6 +21,7 @@ case "$result" in                                     #
   1)                                                  #
     echo "${WARN_PREFIX}Failure in test $test"        #
     exit 1                                            #
+    ;;                                                #
   139)                                                #
     echo "${ERR_PREFIX}SIGSEGV in test $test"         #
     kill -SIGSEGV $$                                  #
