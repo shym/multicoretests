@@ -11,4 +11,4 @@ jobs:
       only_test: 'src/ephemeron/stm_tests.exe'
       repeats: '200'
       repeats_failfast: true
-      compiler_commit: '1798108ae987674f4b0dd27f65a1c43118e3de9c'
+      compiler_commit: '88761d9b63f1ca99d0a900fc34190c4b060be42b'
