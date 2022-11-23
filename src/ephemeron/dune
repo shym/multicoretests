@@ -8,6 +8,7 @@
 (executable
  (name stm_tests)
  (modules stm_tests)
+ (modes byte native)
  (ocamlc_flags -g)
  (ocamlopt_flags -g)
  (link_flags -runtime-variant=d -g)

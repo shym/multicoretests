@@ -9,6 +9,6 @@ jobs:
       compiler: 'ocaml-variants.5.0.0+trunk,ocaml-option-bytecode-only'
       compiler_branch: '5.0'
       timeout: 360
-      only_test: 'src/ephemeron/stm_tests.exe'
+      only_test: 'src/ephemeron/stm_tests.bc'
       repeats: '200'
       repeats_failfast: true
