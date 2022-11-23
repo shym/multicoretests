@@ -1,4 +1,4 @@
-name: Linux 5.0.0~alpha1 bytecode
+name: Linux 5.0.0+trunk bytecode
 
 on: [push, pull_request, workflow_dispatch]
 
@@ -6,7 +6,8 @@ jobs:
   build:
     uses: ./.github/workflows/common.yml
     with:
-      compiler: 'ocaml-variants.5.0.0~alpha1+options,ocaml-option-bytecode-only'
+      compiler: 'ocaml-variants.5.0.0+trunk,ocaml-option-bytecode-only'
+      compiler_branch: '5.0'
       timeout: 360
       only_test: 'src/ephemeron/stm_tests.exe'
       repeats: '200'
