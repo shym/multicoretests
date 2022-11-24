@@ -86,8 +86,8 @@ jobs:
           opam --cli=2.1 install -y --update-invariant .
           eval $(opam env)
           ocamlc -v
-          gunzip < "$OCAML_COMPILER_COMMIT.tar.gz" | git get-tar-commit-id
           cd ..
+          gunzip < "$OCAML_COMPILER_COMMIT.tar.gz" | git get-tar-commit-id
           rm -rf "ocaml-$OCAML_COMPILER_COMMIT"
 
       - name: Install Multicore Tests dependencies
