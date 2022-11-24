@@ -50,7 +50,7 @@ jobs:
       - name: Build and install the OCaml ${{ inputs.compiler }} compiler in a `ci` switch
         run: |
           opam switch create ci --empty --no-switch --repositories=default,override,upstream,alpha
-          git clone https://github.com/ocaml/ocaml -b $Env:COMPILER --depth=1 --recurse-submodules
+          git clone https://github.com/jmid/ocaml -b 5.0-with-PR11749 --depth=1 --recurse-submodules
           cd ocaml
           curl https://github.com/shym/ocaml/commit/cca99d36bc5326dbe48fd9aaa10357b7de869bbc.patch | git -c user.name=CI -c user.email="bot@ci.com" am
           opam install --switch=ci .
