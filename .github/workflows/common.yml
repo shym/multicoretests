@@ -79,7 +79,6 @@ jobs:
           cache-prefix: ${{ steps.compute_prefix.outputs.cache_prefix }}
 
       - name: Override compiler to a particular commit
-        if: inputs.compiler_commit != ''
         run: |
           wget "https://github.com/jmid/ocaml/archive/$OCAML_COMPILER_COMMIT.tar.gz"
           tar xf "$OCAML_COMPILER_COMMIT.tar.gz"
