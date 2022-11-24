@@ -61,7 +61,7 @@ jobs:
         shell: bash
         run: |
           if [ -n "$OCAML_COMPILER_BRANCH" ]; then
-            echo "cache_prefix=$(curl -sH "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/ocaml/ocaml/commits/$OCAML_COMPILER_BRANCH" | jq -r .commit.tree.sha)" >> "$GITHUB_OUTPUT"
+            echo "cache_prefix=$(curl -sH "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/jmid/ocaml/commits/$OCAML_COMPILER_BRANCH" | jq -r .commit.tree.sha)" >> "$GITHUB_OUTPUT"
           else
             echo "cache_prefix=v1" >> "$GITHUB_OUTPUT"
           fi
