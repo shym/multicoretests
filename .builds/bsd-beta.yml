@@ -1,0 +1,12 @@
+image: openbsd/latest
+packages:
+  - gcc-11.2.0p3
+  - gmake
+sources:
+  - https://git.sr.ht/~rustyne/multicoretests
+tasks:
+  - build: |
+      make -C multicoretests
+  - runtest: |
+      cd multicoretests
+      for i in `seq 1000`; do echo "$i"; for j in `seq 1000`; do ./rmdirs || true; done; done
