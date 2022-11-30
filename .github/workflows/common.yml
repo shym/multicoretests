@@ -41,7 +41,7 @@ jobs:
     env:
       ONLY_TEST: 'src/domain/domain_spawntree.exe'
       SEED: ${{ inputs.seed }}
-      REPEATS: '1'
+      REPEATS: '100'
       OCAML_COMPILER_COMMIT: ${{ inputs.compiler_commit }}
       OCAML_COMPILER_BRANCH: ${{ inputs.compiler_branch }}
 
