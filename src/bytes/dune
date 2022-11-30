@@ -26,11 +26,11 @@
  (package multicoretests)
  (deps stm_tests.exe)
  (action
-  (run ./%{deps} --verbose)))
+  (progn (echo "Starting bytes/%{deps}") (run %{deps} --verbose))))
 
 (rule
  (alias runtest)
  (package multicoretests)
  (deps lin_tests_dsl.exe)
  (action
-  (run ./%{deps} --verbose)))
+  (progn (echo "Starting bytes/%{deps}") (run %{deps} --verbose))))

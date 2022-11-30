@@ -19,4 +19,4 @@
  (package multicoretests)
  (libraries qcheck-lin.domain)
  (preprocess (pps ppx_deriving.show ppx_deriving.eq))
- (action (run ./%{test} --verbose)))
+ (action (progn (echo "Starting internal/%{deps}") (run %{deps} --verbose))))
