@@ -26,7 +26,7 @@ jobs:
 
     env:
       COMPILER:  ${{ inputs.compiler }}
-      ONLY_TEST: 'src/domain/domain_spawntree.exe'
+      ONLY_TEST: 'src/threadomain/threadomain.exe'
       SEED: ${{ inputs.seed }}
       REPEATS: '30'
       QCHECK_MSG_INTERVAL: '60'
