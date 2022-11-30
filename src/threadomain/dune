@@ -9,6 +9,9 @@
 (executable
  (name threadomain)
  (modules threadomain)
+ (ocamlc_flags -g)
+ (ocamlopt_flags -g)
+ (link_flags -runtime-variant=d -g)
  (libraries util qcheck-core threads)
  (preprocess (pps ppx_deriving.show)))
 
