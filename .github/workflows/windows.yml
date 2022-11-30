@@ -28,7 +28,7 @@ jobs:
       COMPILER:  ${{ inputs.compiler }}
       ONLY_TEST: 'src/domain/domain_spawntree.exe'
       SEED: ${{ inputs.seed }}
-      REPEATS: '30'
+      REPEATS: '1'
       QCHECK_MSG_INTERVAL: '60'
 
     steps:

@@ -73,8 +73,8 @@ let rec dom_interp a = function
 
 let t ~max_depth ~max_width = Test.make
     ~name:"domain_spawntree - with Atomic"
-    ~count:300
-    ~retries:300
+    ~count:10000
+    ~retries:10
     (*~print:show_cmd (gen max_depth max_width)*)
     (make ~print:show_cmd ~shrink:shrink_cmd (gen max_depth max_width))
 
