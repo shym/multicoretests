@@ -16,4 +16,4 @@
  (alias runtest)
  (package multicoretests)
  (deps threadomain.exe)
- (action (progn (echo "Starting threadomain/%{deps}") (run %{deps} --verbose))))
+ (action (progn (echo "Starting threadomain/%{deps}\n") (run %{deps} --verbose))))

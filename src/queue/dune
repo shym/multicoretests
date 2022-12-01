@@ -18,7 +18,7 @@
  (alias runtest)
  (package multicoretests)
  (deps lin_tests_dsl.exe)
- (action (progn (echo "Starting queue/%{deps}") (run %{deps} --verbose))))
+ (action (progn (echo "Starting queue/%{deps}\n") (run %{deps} --verbose))))
 
 (executable
  (name lin_tests)
@@ -31,4 +31,4 @@
 ;  (alias runtest)
 ;  (package multicoretests)
 ;  (deps lin_tests.exe)
-;  (action (progn (echo "Starting queue/%{deps}") (run %{deps} --verbose))))
+;  (action (progn (echo "Starting queue/%{deps}\n") (run %{deps} --verbose))))

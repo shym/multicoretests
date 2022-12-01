@@ -17,4 +17,4 @@
  (alias runtest)
  (package multicoretests)
  (deps stm_tests.exe)
- (action (progn (echo "Starting buffer/%{deps}") (run %{deps} --verbose))))
+ (action (progn (echo "Starting buffer/%{deps}\n") (run %{deps} --verbose))))

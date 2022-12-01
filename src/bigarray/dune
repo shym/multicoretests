@@ -26,4 +26,4 @@
  (package multicoretests)
  (deps lin_tests_dsl.exe)
  (action
-  (progn (echo "Starting bigarray/%{deps}") (run %{deps} --verbose))))
+  (progn (echo "Starting bigarray/%{deps}\n") (run %{deps} --verbose))))
