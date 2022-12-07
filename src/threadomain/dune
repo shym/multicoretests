@@ -9,8 +9,7 @@
 (executable
  (name threadomain)
  (modules threadomain)
- (libraries util qcheck-core threads)
- (preprocess (pps ppx_deriving.show)))
+ (libraries util qcheck-core threads))
 
 (rule
  (alias runtest)

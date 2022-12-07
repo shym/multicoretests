@@ -45,6 +45,8 @@ type spawn_join = {
   workload:         worktype array
 } [@@deriving show { with_path = false }]
 
+let show_spawn_join _ = "dummy show spawn join"
+
 (* Ensure that any domain is higher up in the join tree than all its
    threads, so that we cannot have a thread waiting on its domain even
    indirectly *)
