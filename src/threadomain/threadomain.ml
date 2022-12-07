@@ -23,6 +23,20 @@ let tree sz =
 
 type worktype = Burn | Tak of int
   [@@deriving show { with_path = false }]
+let rec pp_worktype
+  : Format.formatter -> worktype -> unit
+  =
+  (
+      fun fmt ->
+        function
+        | Burn -> Format.pp_print_string fmt "Burn"
+        | Tak a0 ->
+            (Format.fprintf fmt "(@[<2>Tak@ ";
+             (Format.fprintf fmt "%d") a0;
+             Format.fprintf fmt "@])")
+  [@ocaml.warning "-A"])
+and show_worktype : worktype -> string =
+  fun x -> Format.asprintf "%a" pp_worktype x[@@ocaml.warning "-32"]
 
 (** A test of spawn and join
 
@@ -45,7 +59,92 @@ type spawn_join = {
   workload:         worktype array
 } [@@deriving show { with_path = false }]
 
-let show_spawn_join _ = "dummy show spawn join"
+let rec pp_spawn_join : Format.formatter -> spawn_join -> unit =
+  let __0 () = pp_worktype in
+  ( fun fmt ->
+        fun x ->
+          Format.fprintf fmt "@[<2>{ ";
+          (((((Format.fprintf fmt "@[%s =@ "
+                 "spawn_tree";
+               ((fun x ->
+                   Format.fprintf fmt "@[<2>[|";
+                   ignore
+                     (Array.fold_left
+                        (fun sep ->
+                           fun x ->
+                             if sep
+                             then
+                               Format.fprintf fmt ";@ ";
+                             (Format.fprintf fmt "%d") x;
+                             true) false x);
+                   Format.fprintf fmt "@,|]@]"))
+                 x.spawn_tree;
+               Format.fprintf fmt "@]");
+              Format.fprintf fmt ";@ ";
+              Format.fprintf fmt "@[%s =@ "
+                "join_permutation";
+              ((fun x ->
+                  Format.fprintf fmt "@[<2>[|";
+                  ignore
+                    (Array.fold_left
+                       (fun sep ->
+                          fun x ->
+                            if sep
+                            then
+                              Format.fprintf fmt ";@ ";
+                            (Format.fprintf fmt "%d") x;
+                            true) false x);
+                  Format.fprintf fmt "@,|]@]"))
+                x.join_permutation;
+              Format.fprintf fmt "@]");
+             Format.fprintf fmt ";@ ";
+             Format.fprintf fmt "@[%s =@ " "join_tree";
+             ((fun x ->
+                 Format.fprintf fmt "@[<2>[|";
+                 ignore
+                   (Array.fold_left
+                      (fun sep ->
+                         fun x ->
+                           if sep
+                           then Format.fprintf fmt ";@ ";
+                           (Format.fprintf fmt "%d") x;
+                           true) false x);
+                 Format.fprintf fmt "@,|]@]"))
+               x.join_tree;
+             Format.fprintf fmt "@]");
+            Format.fprintf fmt ";@ ";
+            Format.fprintf fmt "@[%s =@ " "domain_or";
+            ((fun x ->
+                Format.fprintf fmt "@[<2>[|";
+                ignore
+                  (Array.fold_left
+                     (fun sep ->
+                        fun x ->
+                          if sep
+                          then Format.fprintf fmt ";@ ";
+                          (Format.fprintf fmt "%B") x;
+                          true) false x);
+                Format.fprintf fmt "@,|]@]"))
+              x.domain_or;
+            Format.fprintf fmt "@]");
+           Format.fprintf fmt ";@ ";
+           Format.fprintf fmt "@[%s =@ " "workload";
+           ((fun x ->
+               Format.fprintf fmt "@[<2>[|";
+               ignore
+                 (Array.fold_left
+                    (fun sep ->
+                       fun x ->
+                         if sep
+                         then Format.fprintf fmt ";@ ";
+                         ((__0 ()) fmt) x;
+                         true) false x);
+               Format.fprintf fmt "@,|]@]")) x.workload;
+           Format.fprintf fmt "@]");
+          Format.fprintf fmt "@ }@]"
+    [@ocaml.warning "-A"])
+and show_spawn_join : spawn_join -> string =
+  fun x -> Format.asprintf "%a" pp_spawn_join x[@@ocaml.warning "-32"]
 
 (* Ensure that any domain is higher up in the join tree than all its
    threads, so that we cannot have a thread waiting on its domain even
