@@ -1,38 +1,19 @@
-name: Windows mingw64 common workflow
+name: Windows Cygwin tests for threadomain
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
-on:
-  workflow_call:
-    inputs:
-      compiler:
-        description: 'Branch or tag of ocaml/ocaml to use as compiler'
-        type: string
-        default: '5.0.0-beta2'
-      only_test:
-        description: 'Only test to run (eg “src/array/lin_tests.exe”); whole suite is run if empty'
-        type: string
-        default: ''
-      seed:
-        description: 'Seed for the only test'
-        type: string
-        default: ''
-      repeats:
-        description: 'Number of test attempts'
-        type: string
-        default: '2'
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
     runs-on: windows-latest
 
     env:
-      COMPILER:  ${{ inputs.compiler }}
-      ONLY_TEST: ${{ inputs.only_test }}
-      SEED: ${{ inputs.seed }}
-      REPEATS: ${{ inputs.repeats }}
+      COMPILER:  'trunk'
+      ONLY_TEST: 'src/threadomain/threadomain.exe'
+      REPEATS: '50'
       QCHECK_MSG_INTERVAL: '60'
 
     steps:
@@ -56,7 +37,7 @@ jobs:
           opam switch create ci --empty --no-switch --repositories=default,override,upstream,alpha
           git clone https://github.com/ocaml/ocaml -b $Env:COMPILER --depth=1 --recurse-submodules
           cd ocaml
-          curl https://github.com/shym/ocaml/commit/cca99d36bc5326dbe48fd9aaa10357b7de869bbc.patch | git -c user.name=CI -c user.email="bot@ci.com" am
+          git submodule update --remote
           opam install --switch=ci .
           git log
           cd ..
@@ -64,13 +45,13 @@ jobs:
 
       - name: Show environment
         run: |
-          opam exec --switch=ci -- ocamlopt --version
+          opam exec --switch=ci -- ocamlopt -config
           opam config list --switch=ci
 
       - name: Install Multicore Tests dependencies
         run: |
           opam pin --switch=ci add "https://github.com/shym/ocamlfind.git#fix-win"
-          opam install --switch=ci . --deps-only --with-test
+          opam install --switch=ci qcheck-core
 
       - name: Build the test suite
         run: opam exec --switch=ci -- dune build
