@@ -124,11 +124,11 @@ jobs:
         run: echo "QCHECK_MSG_INTERVAL=60" >> $GITHUB_ENV
 
       - name: Build the test suite
-        run: opam exec -- dune build
+        run: opam exec -- dune build --verbose
         if: env.ONLY_TEST == ''
 
       - name: Run the test suite
-        run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
+        run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice --verbose
         if: env.ONLY_TEST == ''
 
       - name: Run only one test
