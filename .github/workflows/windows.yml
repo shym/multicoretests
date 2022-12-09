@@ -66,6 +66,7 @@ jobs:
         run: |
           opam exec --switch=ci -- ocamlopt --version
           opam config list --switch=ci
+          opam exec --switch=ci -- dune printenv
 
       - name: Install Multicore Tests dependencies
         run: |
