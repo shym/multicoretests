@@ -9,6 +9,8 @@ module ICConf : Lin.Spec = struct
   let cleanup = In_channel.close
 
   open Lin
+  let int,int64 = nat_small,nat64_small
+
   let api = [
     (* Only one t is tested, so skip stdin and opening functions *)
     (* val_ "In_channel.stdin"               In_channel.stdin                 (t) ; *)
@@ -53,7 +55,7 @@ module OCConf : Lin.Spec = struct
   let lift f (_, chan) = f chan
 
   open Lin
-  let int,string = nat_small,string_small
+  let int,int64,string = nat_small,nat64_small,string_small
   let api = [
     (* Only one t is tested, so skip stdout, stderr and opening functions *)
 
