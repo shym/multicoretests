@@ -30,9 +30,9 @@ jobs:
 
     env:
       COMPILER:  ${{ inputs.compiler }}
-      ONLY_TEST: ${{ inputs.only_test }}
+      ONLY_TEST: 'src/in_out_channel/lin_tests_dsl.exe'
       SEED: ${{ inputs.seed }}
-      REPEATS: ${{ inputs.repeats }}
+      REPEATS: '10'
       QCHECK_MSG_INTERVAL: '60'
 
     steps:
