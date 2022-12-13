@@ -30,7 +30,7 @@ jobs:
 
     env:
       COMPILER:  ${{ inputs.compiler }}
-      ONLY_TEST: 'src/in_out_channel/lin_tests_dsl.exe'
+      ONLY_TEST: 'src/in_out_channel/lin_tests_dsl_thread.exe'
       SEED: ${{ inputs.seed }}
       REPEATS: '10'
       QCHECK_MSG_INTERVAL: '60'
