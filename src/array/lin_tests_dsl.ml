@@ -16,13 +16,44 @@ struct
     [ val_ "Array.length"   Array.length   (t @-> returning int);
       val_ "Array.get"      Array.get      (t @-> int @-> returning_or_exc char);
       val_ "Array.set"      Array.set      (t @-> int @-> char @-> returning_or_exc unit);
+      (* Only one t is tested, so skip many functions that create
+         arrays or take multiple arrays as input *)
+      (* make *)
+      (* init *)
+      (* make_matrix *)
+      (* append *)
+      (* concat *)
       val_ "Array.sub"      Array.sub      (t @-> int @-> int @-> returning_or_exc (array char));
       val_ "Array.copy"     Array.copy     (t @-> returning (array char));
       val_ "Array.fill"     Array.fill     (t @-> int @-> int @-> char @-> returning_or_exc unit);
+      (* blit *)
       val_ "Array.to_list"  Array.to_list  (t @-> returning (list char));
+      (* of_list *)
+      (* Skip higher-order functions *)
+      (* iter *)
+      (* iteri *)
+      (* map *)
+      (* mapi *)
+      (* fold_left *)
+      (* fold_left_map *)
+      (* fold_right *)
+      (* iter2 *)
+      (* map2 *)
+      (* for_all *)
+      (* exists *)
       val_ "Array.mem"      Array.mem      (char @-> t @-> returning bool);
-      val_ "Array.sort"     (Array.sort Char.compare) (t @-> returning unit);
-      val_ "Array.to_seq"   array_to_seq   (t @-> returning (seq char));
+      val_ "Array.memq"     Array.memq     (char @-> t @-> returning bool);
+      (* find_opt *)
+      (* find_map *)
+      (* As t = char array, can't use split *)
+      (* split *)
+      (* combine *)
+      val_ "Array.sort"        (Array.sort Char.compare)        (t @-> returning unit);
+      val_ "Array.stable_sort" (Array.stable_sort Char.compare) (t @-> returning unit);
+      val_ "Array.fast_sort"   (Array.stable_sort Char.compare) (t @-> returning unit);
+      val_ "Array.to_seq"      array_to_seq                     (t @-> returning (seq char));
+      (* to_seqi: no combinator for pairs *)
+      (* of_seq *)
     ]
 end
 
