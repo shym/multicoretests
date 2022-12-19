@@ -80,8 +80,8 @@ let gen_spawn_join sz =
   let open Gen in
   build_spawn_join sz
     <$> tree sz <*> permutation sz <*> tree sz
-    <*> array_size (pure sz) (frequencyl [(4, false); (1, true)])
-    <*> array_size (pure sz) worktype
+    <*> array_size (pure sz) (pure false)
+    <*> array_size (pure sz) (pure (Tak 0))
 
 type handle =
   | NoHdl
