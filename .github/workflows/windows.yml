@@ -89,6 +89,7 @@ jobs:
           $ErrorActionPreference = 'Continue'
           $failures = 0
           for($i = 1; $i -le "${env:REPEATS}"; $i++) {
+            echo "Starting $i-th run"
             if("${env:SEED}" -eq "") {
               opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v
               if($? -eq 0) { $failures += 1 }
