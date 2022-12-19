@@ -32,7 +32,7 @@ jobs:
       COMPILER:  ${{ inputs.compiler }}
       ONLY_TEST: 'src/threadomain/threadomain.exe'
       SEED: ${{ inputs.seed }}
-      REPEATS: '30'
+      REPEATS: '3000'
       QCHECK_MSG_INTERVAL: '60'
 
     steps:
