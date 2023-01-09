@@ -56,6 +56,8 @@ jobs:
           opam switch create ci --empty --no-switch --repositories=default,override,upstream,alpha
           git clone https://github.com/ocaml/ocaml -b $Env:COMPILER --depth=1 --recurse-submodules
           cd ocaml
+          git fetch --depth=1 origin refs/pull/11846/head:refs/heads/pr
+          git checkout pr
           curl https://github.com/shym/ocaml/commit/cca99d36bc5326dbe48fd9aaa10357b7de869bbc.patch | git -c user.name=CI -c user.email="bot@ci.com" am
           opam install --switch=ci .
           git log
