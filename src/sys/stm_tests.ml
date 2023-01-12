@@ -10,7 +10,7 @@ struct
     | Mkdir of path * string
     | Rmdir of path * string
     | Readdir of path
-    | Touch of path * string
+    | Mkfile of path * string
     [@@deriving show { with_path = false }]
 
   module Map_names = Map.Make (String)
@@ -51,7 +51,7 @@ struct
                 map2 (fun path new_dir_name -> Mkdir (path, new_dir_name)) path_gen name_gen;
                 map2 (fun path delete_dir_name -> Rmdir (path, delete_dir_name)) path_gen name_gen;
                 map (fun path -> Readdir path) path_gen;
-                map2 (fun path new_file_name -> Touch (path, new_file_name)) path_gen name_gen;
+                map2 (fun path new_file_name -> Mkfile (path, new_file_name)) path_gen name_gen;
             ])
 
   let sandbox_root = Sys.getcwd () / "sandbox"
@@ -121,7 +121,7 @@ struct
           then fs
           else Directory {fs_map = (update_map_name d.fs_map next_in_path nfs)}))
 
-  let rec touch_model fs path new_file_name =
+  let rec mkfile_model fs path new_file_name =
     match fs with
     | File        -> fs
     | Directory d ->
@@ -133,7 +133,7 @@ struct
         (match Map_names.find_opt next_in_path d.fs_map with
         | None        -> fs
         | Some sub_fs ->
-          let nfs = touch_model sub_fs tl_path new_file_name in
+          let nfs = mkfile_model sub_fs tl_path new_file_name in
           if nfs = sub_fs
           then fs
           else Directory {fs_map = update_map_name d.fs_map next_in_path nfs}))
@@ -150,10 +150,10 @@ struct
       then rmdir_model fs path delete_dir_name
       else fs
     | Readdir _path -> fs
-    | Touch (path, new_file_name) ->
+    | Mkfile (path, new_file_name) ->
       if mem_model fs (path @ [new_file_name])
       then fs
-      else touch_model fs path new_file_name
+      else mkfile_model fs path new_file_name
 (*
   let env = Unix.environment ()
 
@@ -177,6 +177,10 @@ struct
 
   let p path =  (List.fold_left (/) sandbox_root path)
 
+  let mkfile filepath =
+    let flags = [Open_wronly; Open_creat; Open_excl] in
+    Out_channel.with_open_gen flags 0o666 filepath (fun _ -> ())
+
   let run c _file_name =
     match c with
     | File_exists path -> Res (bool, Sys.file_exists (p path))
@@ -186,18 +190,8 @@ struct
       Res (result unit exn, protect (Sys.rmdir) ((p path) / delete_dir_name))
     | Readdir path ->
       Res (result (array string) exn, protect (Sys.readdir) (p path))
-    | Touch (path, new_file_name) ->
-      let void = match Sys.os_type with
-                 | "Unix" -> "/dev/null"
-                 | "Win32" -> "nul"
-                 | v -> failwith ("Sys tests not working with " ^ v)
-      in
-      (* Even if the command is called Touch, we use the actual
-         command echo so that we obtain the same behaviour under
-         unix and windows when the target is an existing directory
-         (rather than a regular file) *)
-      let cmd = Printf.sprintf "echo . > %s 2> %s" (Filename.quote (p path / new_file_name)) void in
-      Res (unit, ignore (Sys.command cmd))
+    | Mkfile (path, new_file_name) ->
+      Res (result unit exn, protect mkfile (p path / new_file_name))
 
   let fs_is_a_dir fs = match fs with | Directory _ -> true | File -> false
 
@@ -259,7 +253,18 @@ struct
           | Some l ->
             List.sort String.compare l
             = List.sort String.compare (Array.to_list array_of_subdir))))
-    | Touch (_path, _new_file_name), Res ((Unit,_),_) -> true
+    | Mkfile (path, new_file_name), Res ((Result (Unit,Exn),_),res) ->
+      let complete_path = (path @ [new_file_name]) in
+      let concatenated_path = p complete_path in
+      (match res with
+      | Error err ->
+        (match err with
+        | Sys_error s ->
+          (s = concatenated_path ^ ": File exists" && mem_model fs complete_path) ||
+          (s = concatenated_path ^ ": No such file or directory" && not (mem_model fs path)) ||
+          (s = concatenated_path ^ ": Not a directory" && not (path_is_a_dir fs path))
+          | _ -> false)
+        | Ok () -> path_is_a_dir fs path && not (mem_model fs complete_path))
     | _,_ -> false
 end
 
