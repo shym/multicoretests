@@ -253,18 +253,26 @@ struct
           | Some l ->
             List.sort String.compare l
             = List.sort String.compare (Array.to_list array_of_subdir))))
-    | Mkfile (path, new_file_name), Res ((Result (Unit,Exn),_),res) ->
-      let complete_path = (path @ [new_file_name]) in
+    | Mkfile (path, new_file_name), Res ((Result (Unit,Exn),_),res) -> (
+      let complete_path = path @ [ new_file_name ] in
       let concatenated_path = p complete_path in
-      (match res with
-      | Error err ->
-        (match err with
+      let match_msg err msg = err = concatenated_path ^ ": " ^ msg in
+      let msg_path_not_dir =
+        match Sys.os_type with
+        | "Unix"  -> "Not a directory"
+        | "Win32" -> "No such file or directory"
+        | v -> failwith ("Sys tests not working with " ^ v)
+      in
+      match res with
+      | Error err -> (
+        match err with
         | Sys_error s ->
-          (s = concatenated_path ^ ": File exists" && mem_model fs complete_path) ||
-          (s = concatenated_path ^ ": No such file or directory" && not (mem_model fs path)) ||
-          (s = concatenated_path ^ ": Not a directory" && not (path_is_a_dir fs path))
-          | _ -> false)
-        | Ok () -> path_is_a_dir fs path && not (mem_model fs complete_path))
+             (mem_model fs complete_path  && (match_msg s "File exists"
+                                           || match_msg s "Permission denied"))
+          || (not (mem_model fs path)     && match_msg s "No such file or directory")
+          || (not (path_is_a_dir fs path) && match_msg s msg_path_not_dir)
+        | _ -> false)
+      | Ok () -> path_is_a_dir fs path && not (mem_model fs complete_path))
     | _,_ -> false
 end
 
