@@ -30,10 +30,11 @@ void * remover(void * arg) {
   return NULL;
 }
 
+struct args_s aone, atwo;
+sem_t alpha, beta;
+
 int main(int argc, char *argv[]) {
   pthread_t one, two;
-  struct args_s aone, atwo;
-  sem_t alpha, beta;
 
   assert(sem_init(&alpha, 0, 0) == 0);
   assert(sem_init(&beta, 0, 0) == 0);
