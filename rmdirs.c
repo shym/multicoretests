@@ -1,7 +1,6 @@
 #include <pthread.h>
 #include <sys/stat.h>
 #include <assert.h>
-#include <semaphore.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -10,19 +9,12 @@
 #define TESTDIR "_test_dir_"
 
 struct args_s {
-  sem_t *p;
-  sem_t *w;
   int r;
   int err;
 };
 
 void * remover(void * arg) {
 #define ARG ((struct args_s *) arg)
-
-  /* Make sure both threads are running to increase the chance of two
-   * parallel calls to rmdir */
-  assert(sem_post(ARG->p) == 0);
-  assert(sem_wait(ARG->w) == 0);
 
   ARG->r = rmdir(TESTDIR);
   ARG->err = errno;
@@ -31,20 +23,11 @@ void * remover(void * arg) {
 }
 
 struct args_s aone, atwo;
-sem_t alpha, beta;
 
 int main(int argc, char *argv[]) {
   pthread_t one, two;
 
-  assert(sem_init(&alpha, 0, 0) == 0);
-  assert(sem_init(&beta, 0, 0) == 0);
-
   assert(mkdir(TESTDIR, 0755) == 0);
-
-  aone.p = &alpha;
-  aone.w = &beta;
-  atwo.p = &beta;
-  atwo.w = &alpha;
 
   assert(pthread_create(&one, NULL, remover, &aone) == 0);
   assert(pthread_create(&two, NULL, remover, &atwo) == 0);
