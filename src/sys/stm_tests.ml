@@ -257,7 +257,12 @@ struct
       let complete_path = path @ [ new_file_name ] in
       let concatenated_path = p complete_path in
       let match_msg err msg = err = concatenated_path ^ ": " ^ msg in
-      let msg_path_not_dir =
+      let match_msgs err = List.exists (match_msg err) in
+      let msgs_already_exists = ["File exists"; "Permission denied"]
+          (* Permission denied: seen (sometimes?) on Windows *)
+      and msgs_non_existent_dir = ["No such file or directory"; "Invalid argument"]
+          (* Invalid argument: seen on macOS *)
+      and msg_path_not_dir =
         match Sys.os_type with
         | "Unix"  -> "Not a directory"
         | "Win32" -> "No such file or directory"
@@ -267,10 +272,9 @@ struct
       | Error err -> (
         match err with
         | Sys_error s ->
-             (mem_model fs complete_path  && (match_msg s "File exists"
-                                           || match_msg s "Permission denied"))
-          || (not (mem_model fs path)     && match_msg s "No such file or directory")
-          || (not (path_is_a_dir fs path) && match_msg s msg_path_not_dir)
+             (mem_model fs complete_path  && match_msgs s msgs_already_exists)
+          || (not (mem_model fs path)     && match_msgs s msgs_non_existent_dir)
+          || (not (path_is_a_dir fs path) && match_msg  s msg_path_not_dir)
         | _ -> false)
       | Ok () -> path_is_a_dir fs path && not (mem_model fs complete_path))
     | _,_ -> false
