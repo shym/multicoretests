@@ -1,0 +1,22 @@
+name: build and test
+
+on: [push]
+
+jobs:
+  run:
+    name: build
+    strategy:
+      matrix:
+        os:
+            - macos-latest
+            - ubuntu-latest
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@main
+
+      - run: make
+
+      - run: |
+          for i in `seq 1000`; do echo "$i"; for j in `seq 1000`; do ./rmdirs; done; done
