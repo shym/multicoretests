@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     if(aone.r != 0)
       printf("1 failed with error %d: %s\n", aone.err, strerror(aone.err));
     if(atwo.r != 0)
-      printf("1 failed with error %d: %s\n", atwo.err, strerror(atwo.err));
+      printf("2 failed with error %d: %s\n", atwo.err, strerror(atwo.err));
     fflush(stdout);
   }
 
