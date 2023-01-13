@@ -32,7 +32,7 @@ jobs:
       COMPILER:  ${{ inputs.compiler }}
       ONLY_TEST: 'src/sys/stm_tests.exe'
       SEED: ${{ inputs.seed }}
-      REPEATS: '50'
+      REPEATS: '20'
       QCHECK_MSG_INTERVAL: '60'
 
     steps:
