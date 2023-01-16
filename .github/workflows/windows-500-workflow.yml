@@ -22,7 +22,7 @@ jobs:
 
       - name: Install OCaml compiler 5.0 MingW
         uses: ocaml/setup-ocaml@v2
-         with:
+        with:
           ocaml-compiler: ocaml.5.0.0,ocaml-option-mingw
           opam-repositories: |
             dra27: https://github.com/dra27/opam-repository.git#windows-5.0
