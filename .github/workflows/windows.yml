@@ -11,6 +11,10 @@ on:
         description: 'Branch or tag of ocaml/ocaml to use as compiler'
         type: string
         default: '5.0.0'
+      compiler_branch:
+        description: 'Source branch of the compiler, to set up caching properly (must be set if CI is not using a tagged release of OCaml)'
+        type: string
+        default: ''
       only_test:
         description: 'Only test to run (eg “src/array/lin_tests.exe”); whole suite is run if empty'
         type: string
