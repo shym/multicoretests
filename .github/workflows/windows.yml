@@ -39,6 +39,7 @@ jobs:
       SEED: ${{ inputs.seed }}
       REPEATS: ${{ inputs.repeats }}
       QCHECK_MSG_INTERVAL: '60'
+      OPAMERRLOGLEN: 0
 
     steps:
       - name: Checkout code
