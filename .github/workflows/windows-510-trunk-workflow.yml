@@ -6,4 +6,5 @@ jobs:
   build:
     uses: ./.github/workflows/windows.yml
     with:
-      compiler: 'trunk'
+      compiler: ocaml.5.1.0,ocaml-option-mingw
+      compiler_branch: 'trunk'

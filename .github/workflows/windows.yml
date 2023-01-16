@@ -30,6 +30,7 @@ jobs:
 
     env:
       COMPILER:  ${{ inputs.compiler }}
+      OCAML_COMPILER_BRANCH: ${{ inputs.compiler_branch }}
       ONLY_TEST: ${{ inputs.only_test }}
       SEED: ${{ inputs.seed }}
       REPEATS: ${{ inputs.repeats }}
@@ -39,49 +40,48 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install opam etc. with a temporary compiler
+      - name: Pick up a robust cache prefix
+        id: compute_prefix
+        shell: bash
+        run: |
+          if [ -n "$OCAML_COMPILER_BRANCH" ]; then
+            cache_prefix="$(git ls-remote --heads https://github.com/ocaml/ocaml.git "$OCAML_COMPILER_BRANCH" | cut -f 1 | head -n 1)"
+          else
+            cache_prefix=v1
+          fi
+          echo "cache_prefix=$cache_prefix" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
+      - name: Install OCaml compiler ${{ env.COMPILER }}
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: 4.14
+          ocaml-compiler: ${{ env.COMPILER }}
           opam-repositories: |
+            dra27: https://github.com/dra27/opam-repository.git#windows-5.0
+            override: https://github.com/shym/custom-opam-repository.git
             default: https://github.com/fdopen/opam-repository-mingw.git#opam2
-            override: https://github.com/shym/custom-opam-repository.git#windows
             upstream: https://github.com/ocaml/opam-repository.git
             alpha: https://github.com/kit-ty-kate/opam-alpha-repository.git
-          opam-pin: false
           opam-depext: false
-
-      - name: Build and install the OCaml ${{ env.COMPILER }} compiler in a `ci` switch
-        run: |
-          opam switch create ci --empty --no-switch --repositories=default,override,upstream,alpha
-          git clone https://github.com/ocaml/ocaml -b $Env:COMPILER --depth=1 --recurse-submodules
-          cd ocaml
-          curl https://github.com/shym/ocaml/commit/cca99d36bc5326dbe48fd9aaa10357b7de869bbc.patch | git -c user.name=CI -c user.email="bot@ci.com" am
-          opam install --switch=ci .
-          git log
-          cd ..
-          rmdir -Recurse -Force ocaml
+          dune-cache: true
+          cache-prefix: ${{ steps.compute_prefix.outputs.cache_prefix }}
 
       - name: Install Multicore Tests dependencies
         run: |
-          if("${env:COMPILER}" -eq "trunk") {
-            opam pin --switch=ci add ppxlib "git+https://github.com/shym/ppxlib.git#5.1"
-          }
-          opam pin --switch=ci add "https://github.com/shym/ocamlfind.git#fix-win"
-          opam install --switch=ci . --deps-only --with-test
+          opam install . --deps-only --with-test
 
       - name: Show environment
         run: |
-          opam exec --switch=ci -- ocamlopt -config
-          opam config list --switch=ci
-          opam exec --switch=ci -- dune printenv
+          opam exec -- ocamlopt -config
+          opam config list
+          opam exec -- dune printenv
 
       - name: Build the test suite
-        run: opam exec --switch=ci -- dune build
+        run: opam exec -- dune build
         if: env.ONLY_TEST == ''
 
       - name: Run the test suite
-        run: opam exec --switch=ci -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
+        run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
         if: env.ONLY_TEST == ''
 
       - name: Run only one test
@@ -90,10 +90,10 @@ jobs:
           $failures = 0
           for($i = 1; $i -le "${env:REPEATS}"; $i++) {
             if("${env:SEED}" -eq "") {
-              opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v
+              opam exec -- dune exec "${env:ONLY_TEST}" -- -v
               if($? -eq 0) { $failures += 1 }
             } else {
-              opam exec --switch=ci -- dune exec "${env:ONLY_TEST}" -- -v -s "${env:SEED}"
+              opam exec -- dune exec "${env:ONLY_TEST}" -- -v -s "${env:SEED}"
               if($? -eq 0) { $failures += 1 }
             }
           }
