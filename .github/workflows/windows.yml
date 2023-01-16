@@ -68,7 +68,6 @@ jobs:
             upstream: https://github.com/ocaml/opam-repository.git
             alpha: https://github.com/kit-ty-kate/opam-alpha-repository.git
           opam-depext: false
-          dune-cache: true
           cache-prefix: ${{ steps.compute_prefix.outputs.cache_prefix }}
 
       - name: Install Multicore Tests dependencies
