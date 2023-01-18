@@ -1,3 +1,8 @@
+let rec tree path =
+  Format.printf "%s\n" path ;
+  if Sys.is_directory path
+  then Array.iter (fun name -> tree (Filename.concat path name)) (Sys.readdir path)
+
 let test () =
   let testdir = "_testdir" in
   let testdir2 = "_testdir/inner" in
@@ -14,9 +19,12 @@ let test () =
                  assert (e = testdir2 ^ ": No such file or directory") ;
                  false) in
     let exists = Sys.file_exists testdir in
-    assert (made = exists)) in
+    made = exists) in
   let () = Domain.join d1 in
-  let () = Domain.join d2 in
+  let consistent = Domain.join d2 in
+  if not consistent
+  then ( Format.printf "Inconsistency found!\n";
+         tree "." ) ;
   ( try Sys.rmdir testdir2
     with Sys_error e -> assert (e = testdir2 ^ ": No such file or directory") ) ;
   ( try Sys.rmdir testdir
