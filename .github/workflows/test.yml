@@ -1,0 +1,23 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install OCaml compiler
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: ocaml-variants.5.0.0+options,ocaml-option-bytecode-only
+
+      - name: Build the test
+        run: opam exec -- ocamlc -o inconsitencies inconsitencies.ml -g
+
+      - name: Run the test
+        run: |
+          ./inconsitencies
