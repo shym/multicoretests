@@ -13,11 +13,17 @@ jobs:
       - name: Install OCaml compiler
         uses: ocaml/setup-ocaml@v2
         with:
-          ocaml-compiler: ocaml-variants.5.0.0+options,ocaml-option-bytecode-only
+          ocaml-compiler: 5.0.0
 
       - name: Build the test
-        run: opam exec -- ocamlc -o inconsitencies inconsitencies.ml -g
-
-      - name: Run the test
         run: |
-          ./inconsitencies
+          opam exec -- ocamlc -g -o inconsistencies.bc inconsistencies.ml
+          opam exec -- ocamlopt -g -o inconsistencies.nat inconsistencies.ml
+
+      - name: Run the native test
+        run: |
+          ./inconsistencies.nat
+
+      - name: Run the bytecode test
+        run: |
+          ./inconsistencies.bc
