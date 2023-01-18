@@ -5,13 +5,8 @@ on: [push]
 jobs:
   run:
     name: build
-    strategy:
-      matrix:
-        os:
-            - macos-latest
-            - ubuntu-latest
 
-    runs-on: ${{ matrix.os }}
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@main
@@ -19,4 +14,10 @@ jobs:
       - run: make
 
       - run: |
-          for i in `seq 1000`; do echo "$i"; for j in `seq 1000`; do ./rmdirs || true; done; done
+          $ErrorActionPreference = 'Continue'
+          for($i = 1; $i -le 100; $i++) {
+            echo "$i"
+            for($j = 1; $j -le 100; $j++) {
+              rmdirs.exe
+            }
+          }
