@@ -1,7 +1,10 @@
 let rec tree path =
-  Format.printf "%s\n" path ;
-  if Sys.is_directory path
-  then Array.iter (fun name -> tree (Filename.concat path name)) (Sys.readdir path)
+  if Sys.file_exists path
+  then (Format.printf "%s\n" path ;
+        if Sys.is_directory path
+        then Array.iter
+                (fun name -> tree (Filename.concat path name))
+                (Sys.readdir path))
 
 let test () =
   let testdir = "_testdir" in
@@ -24,7 +27,7 @@ let test () =
   let consistent = Domain.join d2 in
   if not consistent
   then ( Format.printf "Inconsistency found!\n";
-         tree ".";
+         tree testdir;
          Format.print_flush ()) ;
   ( try Sys.rmdir testdir2
     with Sys_error e -> assert (e = testdir2 ^ ": No such file or directory") ) ;
@@ -34,5 +37,6 @@ let test () =
 
 let () =
   for i = 0 to 1000000 do
+    if i mod 10000 = 0 then Printf.printf "Run %d\n%!" i ;
     test ()
   done
