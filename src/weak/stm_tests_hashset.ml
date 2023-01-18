@@ -25,7 +25,7 @@ struct
 
   module WHS = Weak.Make(String)
   type sut = WHS.t
-
+(*
   let shrink_string s = Shrink.string ~shrink:Shrink.nil s
 
   let shrink_cmd c = match c with
@@ -39,12 +39,12 @@ struct
     | Mem d -> Iter.map (fun d -> Mem d) (shrink_string d)
     | Count -> Iter.empty
     | Stats -> Iter.empty
-
+*)
   let arb_cmd s =
     let data_gen = match s with
       | [] -> Gen.string_small
       | _::_ -> Gen.(oneof [oneofl s; string_small]) in
-    QCheck.make ~print:show_cmd ~shrink:shrink_cmd
+    QCheck.make ~print:show_cmd (*~shrink:shrink_cmd*)
       Gen.(oneof
              [ return Clear;
                map (fun d -> Merge d) data_gen;
