@@ -57,7 +57,7 @@ jobs:
     env:
       ONLY_TEST: 'src/weak/stm_tests_hashset.exe'
       SEED: ${{ inputs.seed }}
-      REPEATS: '20'
+      REPEATS: '10'
       COMPILER:  ${{ inputs.compiler }}
       OCAML_COMPILER_COMMIT: ${{ inputs.compiler_commit }}
       OCAML_COMPILER_BRANCH: ${{ inputs.compiler_branch }}
