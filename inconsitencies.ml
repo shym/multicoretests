@@ -24,7 +24,8 @@ let test () =
   let consistent = Domain.join d2 in
   if not consistent
   then ( Format.printf "Inconsistency found!\n";
-         tree "." ) ;
+         tree ".";
+         Format.print_flush ()) ;
   ( try Sys.rmdir testdir2
     with Sys_error e -> assert (e = testdir2 ^ ": No such file or directory") ) ;
   ( try Sys.rmdir testdir
