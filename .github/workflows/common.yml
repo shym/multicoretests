@@ -56,7 +56,7 @@ jobs:
   build-and-test:
     env:
       ONLY_TEST: src/weak/stm_tests.exe
-      SEED: ${{ inputs.seed }}
+      SEED: '470692489'
       REPEATS: '100'
       COMPILER:  ${{ inputs.compiler }}
       OCAML_COMPILER_COMMIT: ${{ inputs.compiler_commit }}
