@@ -145,5 +145,5 @@ module WeakHashsetSTM_dom = STM_domain.Make(WHSConf)
 ;;
 QCheck_base_runner.run_tests_main
   [ WeakHashsetSTM_seq.agree_test         ~count:1000 ~name:"STM Weak HashSet test sequential";
-    WeakHashsetSTM_dom.neg_agree_test_par ~count:1000 ~name:"STM Weak HashSet test parallel";
+    WeakHashsetSTM_dom.neg_agree_test_par ~count:1500 ~name:"STM Weak HashSet test parallel";
   ]
