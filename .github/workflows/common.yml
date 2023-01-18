@@ -74,15 +74,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Unix environment ($PATH, $OPAMJOBS)
+      - name: Set up Unix environment ($PATH)
         if: runner.os != 'Windows'
         run: |
           echo "PATH=$GITHUB_WORKSPACE/.github/bin:$PATH" >> $GITHUB_ENV
-          if [ "$RUNNER_OS" = "macOS" ]; then
-            echo "OPAMJOBS=1" >> $GITHUB_ENV
-          fi
-          echo "RUNNER_OS: $RUNNER_OS"
-          cat "$GITHUB_ENV"
 
       - name: Pick up a robust cache prefix
         id: compute_prefix
@@ -122,6 +117,11 @@ jobs:
           opam-depext: false
           cache-prefix: ${{ steps.compute_prefix.outputs.cache_prefix }}
         if: runner.os == 'Windows'
+
+      - name: Set up macOS environment ($OPAMJOBS)
+        if: runner.os == 'macOS'
+        run: |
+          echo "OPAMJOBS=1" >> $GITHUB_ENV
 
       - name: Override compiler to a particular commit
         if: env.OCAML_COMPILER_COMMIT != '' && runner.os != 'Windows'
