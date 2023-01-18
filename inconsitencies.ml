@@ -34,13 +34,13 @@ let test () =
             false
         in
         let exists = Sys.file_exists testdir in
-        made = exists)
+        made, exists)
   in
 
   let () = Domain.join d1 in
-  let consistent = Domain.join d2 in
-  if not consistent then (
-    Format.printf "Inconsistency found!\n";
+  let made, exists = Domain.join d2 in
+  if not (made = exists) then (
+    Format.printf "Inconsistency found (mkdir:%a <> exists:%a)!\n" Format.pp_print_bool made Format.pp_print_bool exists;
     tree testdir;
     Format.print_flush ());
   (try Sys.rmdir testdir2
