@@ -6,18 +6,11 @@ jobs:
   run:
     name: build
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@main
 
       - run: make
 
-      - run: |
-          $ErrorActionPreference = 'Continue'
-          for($i = 1; $i -le 100; $i++) {
-            echo "$i"
-            for($j = 1; $j -le 100; $j++) {
-              rmdirs.exe
-            }
-          }
+      - run: ./rmmkdir
