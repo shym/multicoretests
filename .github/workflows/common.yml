@@ -58,7 +58,7 @@ jobs:
       ONLY_TEST: 'src/weak/stm_tests_hashset.exe'
       SEED: ${{ inputs.seed }}
       REPEATS: '10'
-      COMPILER:  5.0.1+trunk
+      COMPILER: 'ocaml-variants.5.0.1+trunk'
       OCAML_COMPILER_COMMIT: ${{ inputs.compiler_commit }}
       OCAML_COMPILER_BRANCH: '5.0'
       REPEATS_FAILFAST: ${{ inputs.repeats_failfast }}
