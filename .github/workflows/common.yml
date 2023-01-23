@@ -55,7 +55,7 @@ on:
 jobs:
   build-and-test:
     env:
-      ONLY_TEST: ${{ inputs.only_test }}
+      ONLY_TEST: src/threadomain/threadomain.exe
       SEED: ${{ inputs.seed }}
       REPEATS: ${{ inputs.repeats }}
       COMPILER:  ${{ inputs.compiler }}
