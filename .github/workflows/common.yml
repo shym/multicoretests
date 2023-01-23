@@ -56,7 +56,7 @@ jobs:
   build-and-test:
     env:
       ONLY_TEST: src/threadomain/threadomain.exe
-      SEED: ${{ inputs.seed }}
+      SEED: '177187292'
       REPEATS: ${{ inputs.repeats }}
       COMPILER:  ${{ inputs.compiler }}
       OCAML_COMPILER_COMMIT: ${{ inputs.compiler_commit }}
