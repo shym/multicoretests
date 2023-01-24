@@ -79,8 +79,8 @@ jobs:
       OCAMLRUNPARAM: ${{ inputs.runparam }}
       QCHECK_MSG_INTERVAL: '60'
 
-      CUSTOM_COMPILER_VERSION: ${{ inputs.custom_compiler_version }}
-      CUSTOM_COMPILER_SRC: ${{ inputs.custom_compiler_src }}
+      CUSTOM_COMPILER_VERSION: 5.1.0+gitaf72270e1a
+      CUSTOM_COMPILER_SRC: https://github.com/ocaml/ocaml/archive/af72270e1a.tar.gz
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
 
     runs-on: ${{ inputs.runs_on }}
