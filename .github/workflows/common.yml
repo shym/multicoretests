@@ -114,16 +114,19 @@ jobs:
             else
               OPAMTEMPLATE=.github/opam/ocaml-variants.opam.unix
             fi
+            OPAMDIR=".github/opam/custom/packages/ocaml-variants/ocaml-variants.$CUSTOM_COMPILER_VERSION"
+            mkdir -p "$OPAMDIR"
             awk -v compiler="$CUSTOM_COMPILER_VERSION"               \
                 -v compilersrc="$CUSTOM_COMPILER_SRC"                \
                 -v ocamlpkg="$CUSTOM_OCAML_PKG_VERSION"              \
                 '{ sub("__OCAML_COMPILER_FULL_VERSION__", compiler); \
                    sub("__OCAML_COMPILER_SRC__", compilersrc);       \
                    sub("__OCAML_OPAM_PACKAGE_VERSION__", ocamlpkg);  \
-                   print }' < $OPAMTEMPLATE > ocaml-variants.opam
-            echo Generated OPAM configuration:
+                   print }' < $OPAMTEMPLATE                          \
+                   > "$OPAMDIR/opam"
+            echo Generated OPAM package configuration:
             echo ------------------------------------------------
-            cat ocaml-variants.opam
+            cat "$OPAMDIR/opam"
             echo ------------------------------------------------
 
             # Reset $COMPILER keeping the options
@@ -131,7 +134,7 @@ jobs:
             then OPTS="";
             else OPTS=",${COMPILER#*,}";
             fi
-            echo "COMPILER=ocaml.$CUSTOM_OCAML_PKG_VERSION$OPTS" >> "$GITHUB_ENV"
+            echo "COMPILER=ocaml-variants.$CUSTOM_COMPILER_VERSION$OPTS" >> "$GITHUB_ENV"
             cat "$GITHUB_ENV"
           fi
 
@@ -149,6 +152,7 @@ jobs:
         with:
           ocaml-compiler: ${{ env.COMPILER }}
           opam-repositories: |
+            local: ${{ github.workspace }}/.github/opam/custom
             default: https://github.com/ocaml/opam-repository.git
             override: https://github.com/shym/custom-opam-repository.git
           opam-depext: false
@@ -161,6 +165,7 @@ jobs:
         with:
           ocaml-compiler: ${{ env.COMPILER }}
           opam-repositories: |
+            local: ${{ github.workspace }}\.github\opam\custom
             dra27: https://github.com/dra27/opam-repository.git#windows-5.0
             override: https://github.com/shym/custom-opam-repository.git
             default: https://github.com/fdopen/opam-repository-mingw.git#opam2
