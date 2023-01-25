@@ -138,10 +138,10 @@ jobs:
             cat "$GITHUB_ENV"
 
             # Since $CUSTOM_COMPILER_VERSION completely identifies the
-            # compiler, no need to pickup a fancy cache prefix
+            # compiler, a standard cache prefix will improve caching
             cache_prefix=v1
           else
-            # Pick up a robust cach prefix
+            # Pick up a robust cache prefix
             if [ -n "$OCAML_COMPILER_BRANCH" ]; then
               cache_prefix="$(git ls-remote --heads https://github.com/ocaml/ocaml.git "$OCAML_COMPILER_BRANCH" | cut -f 1 | head -n 1)"
             else
