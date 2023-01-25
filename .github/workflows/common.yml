@@ -136,23 +136,27 @@ jobs:
             fi
             echo "COMPILER=ocaml-variants.$CUSTOM_COMPILER_VERSION$OPTS" >> "$GITHUB_ENV"
             cat "$GITHUB_ENV"
-          fi
 
-          # Pick up a robust cach prefix
-          if [ -n "$OCAML_COMPILER_BRANCH" ]; then
-            cache_prefix="$(git ls-remote --heads https://github.com/ocaml/ocaml.git "$OCAML_COMPILER_BRANCH" | cut -f 1 | head -n 1)"
-          else
+            # Since $CUSTOM_COMPILER_VERSION completely identifies the
+            # compiler, no need to pickup a fancy cache prefix
             cache_prefix=v1
+          else
+            # Pick up a robust cach prefix
+            if [ -n "$OCAML_COMPILER_BRANCH" ]; then
+              cache_prefix="$(git ls-remote --heads https://github.com/ocaml/ocaml.git "$OCAML_COMPILER_BRANCH" | cut -f 1 | head -n 1)"
+            else
+              cache_prefix=v1
+            fi
+            echo "cache_prefix=$cache_prefix" >> "$GITHUB_OUTPUT"
+            cat "$GITHUB_OUTPUT"
           fi
-          echo "cache_prefix=$cache_prefix" >> "$GITHUB_OUTPUT"
-          cat "$GITHUB_OUTPUT"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Linux / macOS)
         uses: ocaml/setup-ocaml@v2
         with:
           ocaml-compiler: ${{ env.COMPILER }}
           opam-repositories: |
-            local: ${{ github.workspace }}/.github/opam/custom
+            local: file://${{ github.workspace }}/.github/opam/custom
             default: https://github.com/ocaml/opam-repository.git
             override: https://github.com/shym/custom-opam-repository.git
             alpha: https://github.com/kit-ty-kate/opam-alpha-repository.git
