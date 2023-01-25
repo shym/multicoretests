@@ -147,9 +147,9 @@ jobs:
             else
               cache_prefix=v1
             fi
-            echo "cache_prefix=$cache_prefix" >> "$GITHUB_OUTPUT"
-            cat "$GITHUB_OUTPUT"
           fi
+          echo "cache_prefix=$cache_prefix" >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Linux / macOS)
         uses: ocaml/setup-ocaml@v2
