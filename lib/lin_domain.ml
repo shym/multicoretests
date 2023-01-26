@@ -10,8 +10,12 @@ module Make_internal (Spec : Internal.CmdSpec [@alert "-internal"]) = struct
     let res_arr = Array.map (fun c -> Domain.cpu_relax(); Spec.run c sut) cs_arr in
     List.combine cs (Array.to_list res_arr)
 
+  let _, log_ch = Filename.open_temp_file "lintest-inputs" ".log"
+
   (* Linearization property based on [Domain] and an Atomic flag *)
   let lin_prop (seq_pref,cmds1,cmds2) =
+    Printf.fprintf log_ch "Triple: %s\n%!"
+      QCheck.Print.(triple (list Spec.show_cmd) (list Spec.show_cmd) (list Spec.show_cmd) (seq_pref,cmds1,cmds2));
     let sut = Spec.init () in
     let pref_obs = interp sut seq_pref in
     let wait = Atomic.make true in
@@ -23,7 +27,9 @@ module Make_internal (Spec : Internal.CmdSpec [@alert "-internal"]) = struct
     let obs1 = match obs1 with Ok v -> v | Error exn -> raise exn in
     let obs2 = match obs2 with Ok v -> v | Error exn -> raise exn in
     let seq_sut = Spec.init () in
-    check_seq_cons pref_obs obs1 obs2 seq_sut []
+    let res = check_seq_cons pref_obs obs1 obs2 seq_sut [] in
+    Printf.fprintf log_ch "- %b\n%!" res ;
+    res
       || QCheck.Test.fail_reportf "  Results incompatible with sequential execution\n\n%s"
          @@ Util.print_triple_vertical ~fig_indent:5 ~res_width:35
               (fun (c,r) -> Printf.sprintf "%s : %s" (Spec.show_cmd c) (Spec.show_res r))
