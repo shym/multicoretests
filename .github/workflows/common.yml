@@ -76,14 +76,14 @@ jobs:
       QCHECK_MSG_INTERVAL:      '60'
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
-      ONLY_TEST:                ${{ inputs.only_test }}
+      ONLY_TEST:                src/threadomain/threadomain.exe
       SEED:                     ${{ inputs.seed }}
-      REPEATS:                  ${{ inputs.repeats }}
+      REPEATS:                  '50'
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       COMPILER:                 ${{ inputs.compiler }}
-      OCAML_COMPILER_BRANCH:    ${{ inputs.compiler_branch }}
-      CUSTOM_COMPILER_VERSION:  ${{ inputs.custom_compiler_version }}
-      CUSTOM_COMPILER_SRC:      ${{ inputs.custom_compiler_src }}
+      OCAML_COMPILER_BRANCH:    'refs/pull/11307/head'
+      CUSTOM_COMPILER_VERSION:  '5.1.0+pr11307'
+      CUSTOM_COMPILER_SRC:      'https://codeload.github.com/ocaml/ocaml/tar.gz/refs/pull/11307/head'
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
 
     runs-on: ${{ inputs.runs_on }}
