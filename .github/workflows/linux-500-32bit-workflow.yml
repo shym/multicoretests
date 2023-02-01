@@ -8,3 +8,5 @@ jobs:
     with:
       compiler: 'ocaml-variants.5.0.0+options,ocaml-option-32bit'
       timeout: 360
+    env:
+      OVERRIDE_APT_INSTALL: bubblewrap gcc-multilib
