@@ -103,6 +103,12 @@ jobs:
           cache-prefix: ${{ steps.compute_prefix.outputs.cache_prefix }}
         if: runner.os != 'Windows'
 
+      - name: Install Cygwin with GCC
+        uses: cygwin/cygwin-install-action@v3
+        with:
+          packages: gcc-core gcc-g++
+          site: 'https://cygwin.mirror.constant.com'
+
       - name: Install OCaml compiler ${{ env.COMPILER }} (Windows)
         uses: ocaml/setup-ocaml@v2
         with:
