@@ -65,6 +65,7 @@ jobs:
       DUNE_PROFILE: ${{ inputs.dune_profile }}
       OCAMLRUNPARAM: ${{ inputs.runparam }}
       QCHECK_MSG_INTERVAL: '60'
+      OPAMYES: 1
 
     runs-on: ${{ inputs.runs_on }}
 
@@ -80,12 +81,8 @@ jobs:
           packages: opam
           site: 'https://cygwin.mirror.constant.com'
 
-      - run: |
-          bash -c "which bash"
-
       - name: Configure OPAM
         run: |
-          export OPAMYES=1
           opam init --disable-sandboxing --auto-setup --bare
           opam repository add --all upstream "https://github.com/ocaml/opam-repository.git"
           opam repository add --all default "https://github.com/fdopen/opam-repository-mingw.git#opam2"
