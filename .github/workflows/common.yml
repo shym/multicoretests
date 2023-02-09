@@ -72,8 +72,19 @@ jobs:
     timeout-minutes: ${{ inputs.timeout }}
 
     steps:
+      - run: |
+          git config --global core.autocrlf input
+
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Set up caching
+        uses: actions/cache@v3
+        with:
+          path:
+            - 'C:\cygwin-packages'
+            - 'C:\Users\runneradmin\.opam'
+          key: 'cygwin-opam'
 
       - name: Install Cygwin OPAM
         uses: cygwin/cygwin-install-action@v3
@@ -94,6 +105,7 @@ jobs:
         run: |
           opam exec -- ocamlc -config
           opam config list
+          opam list --columns=name,installed-version,repository,synopsis-or-target
 
       - name: Install Multicore Tests dependencies
         run: |
