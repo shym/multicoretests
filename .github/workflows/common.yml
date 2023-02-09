@@ -81,9 +81,9 @@ jobs:
       - name: Set up caching
         uses: actions/cache@v3
         with:
-          path:
-            - 'C:\cygwin-packages'
-            - 'C:\Users\runneradmin\.opam'
+          path: |
+            C:\cygwin-packages
+            C:\Users\runneradmin\.opam
           key: 'cygwin-opam'
 
       - name: Install Cygwin OPAM
