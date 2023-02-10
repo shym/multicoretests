@@ -196,6 +196,15 @@ jobs:
           cache-prefix: ${{ steps.presetup.outputs.cache_prefix }}
         if: "runner.os == 'Windows' && !inputs.cygwin"
 
+      - name: Restore cache (Cygwin)
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            C:\cygwin-packages
+            C:\Users\runneradmin\.opam
+          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
+        if: "runner.os == 'Windows' && inputs.cygwin"
+
       - name: Install Cygwin (in particular OPAM) (Cygwin)
         uses: cygwin/cygwin-install-action@v3
         with:
@@ -228,6 +237,15 @@ jobs:
           opam config list
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
+
+      - name: Save cache (Cygwin)
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            C:\cygwin-packages
+            C:\Users\runneradmin\.opam
+          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
+        if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Build the test suite
         run: opam exec -- dune build
