@@ -239,6 +239,12 @@ jobs:
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
 
+      - name: Display size of the repositories we want to cache (Cygwin)
+        run: |
+          gci -re C:\cygwin-packages | measure-object -property Length -sum
+          gci -re C:\Users\runneradmin\.opam | measure-object -property Length -sum
+        if: "runner.os == 'Windows' && inputs.cygwin"
+
       - name: Save cache (Cygwin)
         uses: actions/cache/save@v3
         with:
