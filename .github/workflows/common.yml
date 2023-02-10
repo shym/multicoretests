@@ -241,7 +241,10 @@ jobs:
 
       - name: Display size of the repositories we want to cache (Cygwin)
         run: |
+          echo cygwin
           gci -re C:\cygwin-packages | measure-object -property Length -sum
+          cygpath -w /home/runneradmin/.opam
+          echo opam
           gci -re C:\Users\runneradmin\.opam | measure-object -property Length -sum
         if: "runner.os == 'Windows' && inputs.cygwin"
 
