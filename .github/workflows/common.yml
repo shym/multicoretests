@@ -104,7 +104,7 @@ jobs:
     timeout-minutes: ${{ inputs.timeout }}
 
     steps:
-      - name: Configure git before checking out (Cygwin only)
+      - name: Configure git before checking out (Cygwin)
         run: |
           # Ensure that .expected files are not modified by check out
           git config --global core.autocrlf input
