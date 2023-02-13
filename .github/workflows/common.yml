@@ -201,7 +201,7 @@ jobs:
         with:
           path: |
             C:\cygwin-packages
-            C:\Users\runneradmin\.opam
+            C:\cygwin\home\runneradmin\.opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
@@ -246,6 +246,8 @@ jobs:
           cygpath -w /home/runneradmin/.opam
           echo opam
           gci -re C:\Users\runneradmin\.opam | measure-object -property Length -sum
+          echo opam bis
+          gci -re C:\cygwin\home\runneradmin\.opam | measure-object -property Length -sum
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Save cache (Cygwin)
@@ -253,7 +255,7 @@ jobs:
         with:
           path: |
             C:\cygwin-packages
-            C:\Users\runneradmin\.opam
+            C:\cygwin\home\runneradmin\.opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
