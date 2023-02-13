@@ -209,7 +209,6 @@ jobs:
         uses: cygwin/cygwin-install-action@v3
         with:
           packages: opam
-          site: 'https://cygwin.mirror.constant.com'
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
