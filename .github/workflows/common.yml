@@ -221,6 +221,7 @@ jobs:
           opam repository add --all local "./.github/opam/custom/"
           echo "debug local"
           opam list -a --repos=local
+          opam show --repos=local ocaml-variants
           echo "Create switch (and install the compiler)"
           opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
           opam clean --all-switches --unused-repositories --logs --download-cache --repo-cache
