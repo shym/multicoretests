@@ -185,6 +185,7 @@ struct
 
   let cleanup _ =
     match Sys.os_type with
+    | "Cygwin"
     | "Unix"  -> ignore (Sys.command ("rm -r " ^ Filename.quote sandbox_root))
     | "Win32" -> ignore (Sys.command ("rd /s /q " ^ Filename.quote sandbox_root))
     | v -> failwith ("Sys tests not working with " ^ v)
