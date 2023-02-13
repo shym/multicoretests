@@ -9,5 +9,6 @@ jobs:
       runs_on: windows-latest
       compiler: ocaml.5.1.0
       cygwin: true
-      compiler_git_ref: refs/heads/trunk
+      custom_compiler_version: '5.1.0+git61f10168da60'
+      custom_compiler_src: 'https://github.com/ocaml/ocaml/archive/61f10168da60e94a5f9c2d1ce4cc4e4d512d0007.tar.gz'
       timeout: 360
