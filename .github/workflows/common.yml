@@ -219,12 +219,7 @@ jobs:
           opam repository add --all override "https://github.com/shym/custom-opam-repository.git#cyg"
           opam repository add --all dra27 "https://github.com/dra27/opam-repository.git#windows-5.0"
           opam repository add --all local "./.github/opam/custom/"
-          echo "debug local"
-          opam list -a --repos=local
-          opam show --repos=local ocaml-variants
-          echo "Create switch (and install the compiler)"
           opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
-          opam clean --all-switches --unused-repositories --logs --download-cache --repo-cache
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Set up macOS environment ($OPAMJOBS)
@@ -235,6 +230,7 @@ jobs:
       - name: Install Multicore Tests dependencies
         run: |
           opam install . --deps-only --with-test
+          opam clean --all-switches --unused-repositories --logs --download-cache --repo-cache
 
       - name: Show configuration
         run: |
@@ -245,12 +241,7 @@ jobs:
 
       - name: Display size of the repositories we want to cache (Cygwin)
         run: |
-          echo cygwin
           gci -re C:\cygwin-packages | measure-object -property Length -sum
-          cygpath -w /home/runneradmin/.opam
-          echo opam
-          gci -re C:\Users\runneradmin\.opam | measure-object -property Length -sum
-          echo opam bis
           gci -re C:\cygwin\home\runneradmin\.opam | measure-object -property Length -sum
         if: "runner.os == 'Windows' && inputs.cygwin"
 
