@@ -248,7 +248,7 @@ jobs:
       - name: Save cache (Cygwin)
         uses: actions/cache/save@v3
         with:
-          path: 'C:\cygwin\home\runneradmin\.opam'
+          path: 'C:\cygwin-packages'
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
