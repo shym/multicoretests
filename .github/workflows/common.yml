@@ -206,7 +206,6 @@ jobs:
         with:
           path: |
             C:\cygwin-packages
-            C:\cygwin\home\runneradmin\.opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
@@ -257,7 +256,6 @@ jobs:
         with:
           path: |
             C:\cygwin-packages
-            C:\cygwin\home\runneradmin\.opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
