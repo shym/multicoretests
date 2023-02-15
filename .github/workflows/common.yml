@@ -229,6 +229,7 @@ jobs:
         run: |
           opam install . --deps-only --with-test
           opam clean --all-switches --unused-repositories --logs --download-cache --repo-cache
+        if: false
 
       - name: Show configuration
         run: |
@@ -236,6 +237,7 @@ jobs:
           opam config list
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
+        if: false
 
       - name: Display size of the repositories we want to cache (Cygwin)
         run: |
