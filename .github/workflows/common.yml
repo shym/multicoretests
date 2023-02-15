@@ -169,6 +169,9 @@ jobs:
             echo "PATH=$GITHUB_WORKSPACE/.github/bin:$PATH" >> $GITHUB_ENV
           fi
 
+          # Save pristine PATH for cache action (Cygwin messes it up)
+          echo "cache_path=$PATH" >> "$GITHUB_OUTPUT"
+
       - name: Install OCaml compiler ${{ env.COMPILER }} (Linux / macOS)
         uses: ocaml/setup-ocaml@v2
         with:
@@ -198,6 +201,8 @@ jobs:
 
       - name: Restore cache (Cygwin)
         uses: actions/cache/restore@v3
+        env:
+          PATH: ${{ steps.presetup.outputs.cache_path }}
         with:
           path: |
             C:\cygwin-packages
@@ -247,8 +252,12 @@ jobs:
 
       - name: Save cache (Cygwin)
         uses: actions/cache/save@v3
+        env:
+          PATH: ${{ steps.presetup.outputs.cache_path }}
         with:
-          path: 'C:\cygwin-packages'
+          path: |
+            C:\cygwin-packages
+            C:\cygwin\home\runneradmin\.opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
