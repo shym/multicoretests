@@ -169,6 +169,8 @@ jobs:
             echo "PATH=$GITHUB_WORKSPACE/.github/bin:$PATH" >> $GITHUB_ENV
           fi
 
+          echo "OLDPATH=$PATH" >> $GITHUB_ENV
+
       - name: Install OCaml compiler ${{ env.COMPILER }} (Linux / macOS)
         uses: ocaml/setup-ocaml@v2
         with:
@@ -244,6 +246,12 @@ jobs:
           gci -re C:\cygwin-packages | measure-object -property Length -sum
           gci -re C:\cygwin\home\runneradmin\.opam | measure-object -property Length -sum
         if: "runner.os == 'Windows' && inputs.cygwin"
+
+      - name: Restore PATH
+        run: |
+          echo "Before: ${env:PATH}"
+          echo "After: ${env:OLDPATH}"
+          echo "PATH=${env:OLDPATH}" >> $GITHUB_ENV
 
       - name: Save cache (Cygwin)
         uses: actions/cache/save@v3
