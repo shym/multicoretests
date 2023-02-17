@@ -286,6 +286,7 @@ struct
              Permission denied: seen on Windows *)
       and msg_path_not_dir =
         match Sys.os_type with
+        | "Cygwin"
         | "Unix"  -> "Not a directory"
         | "Win32" -> "No such file or directory"
         | v -> failwith ("Sys tests not working with " ^ v)
