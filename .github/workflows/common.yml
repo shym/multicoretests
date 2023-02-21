@@ -199,31 +199,18 @@ jobs:
           cache-prefix: ${{ steps.presetup.outputs.cache_prefix }}
         if: "runner.os == 'Windows' && !inputs.cygwin"
 
-      - name: Restore cache (Cygwin)
-        uses: actions/cache/restore@v3
-        env:
-          PATH: ${{ steps.presetup.outputs.cache_path }}
-        with:
-          path: |
-            C:\cygwin-packages
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
-        if: "runner.os == 'Windows' && inputs.cygwin"
-
-      - name: Install Cygwin (in particular OPAM) (Cygwin)
-        uses: cygwin/cygwin-install-action@v3
-        with:
-          packages: opam
-        if: "runner.os == 'Windows' && inputs.cygwin"
-
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
-        run: |
-          opam init --disable-sandboxing --auto-setup --bare
-          opam repository add --all main "https://github.com/ocaml/opam-repository.git"
-          opam repository add --all windows "https://github.com/fdopen/opam-repository-mingw.git#opam2"
-          opam repository add --all override "https://github.com/shym/custom-opam-repository.git#cyg"
-          opam repository add --all dra27 "https://github.com/dra27/opam-repository.git#windows-5.0"
-          opam repository add --all local "./.github/opam/custom/"
-          opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
+        uses: shym/setup-ocaml@cygwin
+        with:
+          ocaml-compiler: ${{ env.COMPILER }}
+          opam-repositories: |
+            local: ${{ github.workspace }}\.github\opam\custom
+            dra27: https://github.com/dra27/opam-repository.git#windows-5.0
+            override: https://github.com/shym/custom-opam-repository.git#cyg
+            default: https://github.com/fdopen/opam-repository-mingw.git#opam2
+            upstream: https://github.com/ocaml/opam-repository.git
+          opam-depext: false
+          cache-prefix: ${{ steps.presetup.outputs.cache_prefix }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Set up macOS environment ($OPAMJOBS)
@@ -242,22 +229,6 @@ jobs:
           opam config list
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
-
-      - name: Display size of the repositories we want to cache (Cygwin)
-        run: |
-          gci -re C:\cygwin-packages | measure-object -property Length -sum
-          gci -re C:\cygwin\home\runneradmin\.opam | measure-object -property Length -sum
-        if: "runner.os == 'Windows' && inputs.cygwin"
-
-      - name: Save cache (Cygwin)
-        uses: actions/cache/save@v3
-        env:
-          PATH: ${{ steps.presetup.outputs.cache_path }}
-        with:
-          path: |
-            C:\cygwin-packages
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
-        if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Build the test suite
         run: opam exec -- dune build
