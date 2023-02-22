@@ -10,5 +10,5 @@ module OC_domain = Lin_domain.Make(OCConf)
 let _ =
   QCheck_base_runner.run_tests_main [
     IC_domain.neg_lin_test ~count:1000 ~name:"Lin DSL In_channel test with Domain";
-    OC_domain.neg_lin_test ~count:1000 ~name:"Lin DSL Out_channel test with Domain";
+    OC_domain.neg_lin_test ~count:2000 ~name:"Lin DSL Out_channel test with Domain";
   ]
