@@ -92,6 +92,7 @@ jobs:
       CUSTOM_COMPILER_VERSION:  ${{ inputs.custom_compiler_version }}
       CUSTOM_COMPILER_SRC:      ${{ inputs.custom_compiler_src }}
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
+      OPAMROOT:                 '/cygdrive/d/opam'
 
       # For the record, here is how to set up the environment to test
       # a PR-version of the compiler
@@ -205,7 +206,7 @@ jobs:
           PATH: ${{ steps.presetup.outputs.cache_path }}
         with:
           path: |
-            C:\cygwin-packages
+            D:\opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
@@ -213,6 +214,7 @@ jobs:
         uses: cygwin/cygwin-install-action@v3
         with:
           packages: opam
+          install-dir: 'D:\cygwin'
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
@@ -245,8 +247,12 @@ jobs:
 
       - name: Display size of the repositories we want to cache (Cygwin)
         run: |
+          echo cygwin C
           gci -re C:\cygwin-packages | measure-object -property Length -sum
-          gci -re C:\cygwin\home\runneradmin\.opam | measure-object -property Length -sum
+          echo cygwin D
+          gci -re D:\cygwin-packages | measure-object -property Length -sum
+          echo opam
+          gci -re D:\opam | measure-object -property Length -sum
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Save cache (Cygwin)
@@ -255,7 +261,7 @@ jobs:
           PATH: ${{ steps.presetup.outputs.cache_path }}
         with:
           path: |
-            C:\cygwin-packages
+            D:\opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
