@@ -200,14 +200,14 @@ jobs:
           cache-prefix: ${{ steps.presetup.outputs.cache_prefix }}
         if: "runner.os == 'Windows' && !inputs.cygwin"
 
-      - name: Restore cache (Cygwin)
+      - name: Restore Cygwin packages (Cygwin)
         uses: actions/cache/restore@v3
         env:
           PATH: ${{ steps.presetup.outputs.cache_path }}
         with:
           path: |
-            D:\opam
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
+            C:\cygwin-packages
+          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-packages-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Install Cygwin (in particular OPAM) (Cygwin)
@@ -215,6 +215,26 @@ jobs:
         with:
           packages: opam
           install-dir: 'D:\cygwin'
+        if: "runner.os == 'Windows' && inputs.cygwin"
+
+      - name: Save Cygwin packages (Cygwin)
+        uses: actions/cache/save@v3
+        env:
+          PATH: ${{ steps.presetup.outputs.cache_path }}
+        with:
+          path: |
+            C:\cygwin-packages
+          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-packages-${{ env.COMPILER }}
+        if: "runner.os == 'Windows' && inputs.cygwin"
+
+      - name: Restore OPAM state (Cygwin)
+        uses: actions/cache/restore@v3
+        env:
+          PATH: ${{ steps.presetup.outputs.cache_path }}
+        with:
+          path: |
+            D:\opam
+          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
@@ -245,24 +265,14 @@ jobs:
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
 
-      - name: Display size of the repositories we want to cache (Cygwin)
-        run: |
-          echo cygwin C
-          gci -re C:\cygwin-packages | measure-object -property Length -sum
-          echo cygwin D
-          gci -re D:\cygwin-packages | measure-object -property Length -sum
-          echo opam
-          gci -re D:\opam | measure-object -property Length -sum
-        if: "runner.os == 'Windows' && inputs.cygwin"
-
-      - name: Save cache (Cygwin)
+      - name: Save OPAM state (Cygwin)
         uses: actions/cache/save@v3
         env:
           PATH: ${{ steps.presetup.outputs.cache_path }}
         with:
           path: |
             D:\opam
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-${{ env.COMPILER }}
+          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Build the test suite
