@@ -87,6 +87,7 @@ jobs:
       QCHECK_MSG_INTERVAL:      '60'
       TIMELOGDIR:               ${{ github.workspace }}
       TIMEOUT:                  ${{ inputs.timeout }}
+      TEST_TIMEOUT:             '40'
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
       ONLY_TEST:                ${{ inputs.only_test }}
