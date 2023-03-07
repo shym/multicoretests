@@ -241,22 +241,8 @@ jobs:
         with:
           path: |
             C:\cygwin-packages
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-packages-${{ env.COMPILER }}
+          key: cygwin-packages-opam-2.0.7-1
         if: "runner.os == 'Windows' && inputs.cygwin != ''"
-
-      - name: Wait for the cache (Cygwin)
-        run: sleep 3600
-        if: "runner.os == 'Windows' && inputs.cygwin == 'waiter' && steps.cache_cygwin.outputs.cache-hit != 'true'"
-
-      - name: Retry restoring Cygwin packages (Cygwin)
-        uses: actions/cache/restore@v3
-        env:
-          PATH: ${{ steps.presetup.outputs.cache_path }}
-        with:
-          path: |
-            C:\cygwin-packages
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-packages-${{ env.COMPILER }}
-        if: "runner.os == 'Windows' && inputs.cygwin == 'waiter' && steps.cache_cygwin.outputs.cache-hit != 'true'"
 
       - name: Install Cygwin (in particular OPAM) (Cygwin)
         uses: cygwin/cygwin-install-action@v3
@@ -272,8 +258,8 @@ jobs:
         with:
           path: |
             C:\cygwin-packages
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-packages-${{ env.COMPILER }}
-        if: "runner.os == 'Windows' && inputs.cygwin == 'initializer'"
+          key: cygwin-packages-opam-2.0.7-1
+        if: "runner.os == 'Windows' && inputs.cygwin == 'initializer' && steps.cache_cygwin.outputs.cache-hit != 'true'"
 
       - name: Restore OPAM state (Cygwin)
         uses: actions/cache/restore@v3
@@ -285,6 +271,20 @@ jobs:
             D:\opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin != ''"
+
+      - name: Wait for the cache (Cygwin)
+        run: sleep 3600
+        if: "runner.os == 'Windows' && inputs.cygwin == 'waiter' && steps.cache_opam.outputs.cache-hit != 'true'"
+
+      - name: Retry restoring OPAM packages (Cygwin)
+        uses: actions/cache/restore@v3
+        env:
+          PATH: ${{ steps.presetup.outputs.cache_path }}
+        with:
+          path: |
+            D:\opam
+          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-opam-${{ env.COMPILER }}
+        if: "runner.os == 'Windows' && inputs.cygwin == 'waiter' && steps.cache_opam.outputs.cache-hit != 'true'"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
         run: |
