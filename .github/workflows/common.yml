@@ -284,6 +284,7 @@ jobs:
           path: |
             D:\opam
           key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-opam-${{ env.COMPILER }}
+          fail-on-cache-miss: true
         if: "runner.os == 'Windows' && inputs.cygwin == 'waiter' && steps.cache_opam.outputs.cache-hit != 'true'"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
@@ -295,7 +296,7 @@ jobs:
           opam repository add --all dra27 "https://github.com/dra27/opam-repository.git#windows-5.0"
           opam repository add --all local "./.github/opam/custom/"
           opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
-        if: "runner.os == 'Windows' && inputs.cygwin != '' && steps.cache_opam.outputs.cache-hit != 'true'"
+        if: "runner.os == 'Windows' && inputs.cygwin == 'initializer' && steps.cache_opam.outputs.cache-hit != 'true'"
 
       - name: Set up macOS environment ($OPAMJOBS)
         if: runner.os == 'macOS'
