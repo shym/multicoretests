@@ -1,8 +1,8 @@
-let buf = Buffer.create 16
+let buf = Buffer.create 8
 
 let tester () =
   Buffer.reset buf;
-  Buffer.add_string buf "aaaaaaaaaaaaaa";
+  Buffer.add_string buf "aaaaaa";
 
   let wait = Atomic.make true in
   let dom1 =
