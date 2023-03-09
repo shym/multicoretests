@@ -95,9 +95,9 @@ jobs:
       QCHECK_MSG_INTERVAL:      '60'
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
-      ONLY_TEST:                ${{ inputs.only_test }}
-      SEED:                     ${{ inputs.seed }}
-      REPEATS:                  ${{ inputs.repeats }}
+      ONLY_TEST:                'src/dynlink/lin_tests_dsl.exe'
+      SEED:                     '366632243'
+      REPEATS:                  '50'
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       SUBSUITE:                 ${{ inputs.subsuite }}
       COMPILER:                 ${{ inputs.compiler }}
