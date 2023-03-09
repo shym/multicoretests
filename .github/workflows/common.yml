@@ -83,9 +83,9 @@ jobs:
       QCHECK_MSG_INTERVAL:      '60'
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
-      ONLY_TEST:                ${{ inputs.only_test }}
-      SEED:                     ${{ inputs.seed }}
-      REPEATS:                  ${{ inputs.repeats }}
+      ONLY_TEST:                'src/buffer/stm_tests.exe'
+      SEED:                     '470817338'
+      REPEATS:                  '50'
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       COMPILER:                 ${{ inputs.compiler }}
       OCAML_COMPILER_GIT_REF:   ${{ inputs.compiler_git_ref }}
