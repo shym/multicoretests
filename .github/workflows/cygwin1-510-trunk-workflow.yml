@@ -1,4 +1,4 @@
-name: Cygwin trunk (1)
+name: Cygwin trunk part one
 
 on: [push, pull_request, workflow_dispatch]
 
