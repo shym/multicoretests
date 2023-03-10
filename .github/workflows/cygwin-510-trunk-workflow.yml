@@ -3,22 +3,23 @@ name: Cygwin trunk
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  part1:
-    uses: ./.github/workflows/common.yml
-    with:
-      runs_on: windows-latest
-      compiler: ocaml.5.1.0
-      cygwin: initializer
-      compiler_git_ref: refs/heads/trunk
-      timeout: 360
-      subsuite: src/array src/atomic src/bigarray src/buffer src/bytes src/domain src/dynlink src/ephemeron src/floatarray src/hashtbl src/io
+  build:
+    strategy:
+      matrix:
+        cygwin: [initializer, waiter]
+        include:
+          - cygwin: initializer
+            subsuite: src/array src/atomic src/bigarray src/buffer src/bytes src/domain src/dynlink src/ephemeron src/floatarray src/hashtbl src/io
+          - cygwin: waiter
+            subsuite: src/lazy src/neg_tests src/queue src/semaphore src/stack src/statistics src/sys src/thread src/threadomain src/weak
 
-  part2:
-    uses: ./.github/workflows/common.yml
-    with:
-      runs_on: windows-latest
-      compiler: ocaml.5.1.0
-      cygwin: waiter
-      compiler_git_ref: refs/heads/trunk
-      timeout: 360
-      subsuite: src/lazy src/neg_tests src/queue src/semaphore src/stack src/statistics src/sys src/thread src/threadomain src/weak
+    steps:
+      - name: build
+        uses: ./.github/workflows/common.yml
+        with:
+          runs_on: windows-latest
+          compiler: ocaml.5.1.0
+          cygwin: ${{ matrix.cygwin }}
+          compiler_git_ref: refs/heads/trunk
+          timeout: 360
+          subsuite: ${{ matrix.subsuite }}
