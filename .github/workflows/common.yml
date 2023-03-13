@@ -84,13 +84,13 @@ jobs:
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
       ONLY_TEST:                'src/buffer/stm_tests.exe'
-      SEED:                     '470817338'
-      REPEATS:                  '50'
+      SEED:                     ${{ inputs.seed }}
+      REPEATS:                  '400'
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       COMPILER:                 ${{ inputs.compiler }}
-      OCAML_COMPILER_GIT_REF:   ${{ inputs.compiler_git_ref }}
-      CUSTOM_COMPILER_VERSION:  '5.1.0+buffer-fix'
-      CUSTOM_COMPILER_SRC:      'https://github.com/shym/ocaml/archive/buffer-fix.tar.gz'
+      OCAML_COMPILER_GIT_REF:   'refs/pull/12104/head'
+      CUSTOM_COMPILER_VERSION:  '5.1.0+pr12104'
+      CUSTOM_COMPILER_SRC:      'https://github.com/ocaml/ocaml/archive/refs/pull/12104/head.tar.gz'
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
       OVERRIDE_APT_INSTALL:     ${{ inputs.override_apt_install }}
 
