@@ -19,6 +19,6 @@ let tester () =
   Domain.join dom2
 
 let _ =
-  for _i = 0 to 10 do
+  for _i = 0 to 1000 do
     tester ()
   done
