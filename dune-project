@@ -6,7 +6,7 @@
 (authors "Jan Midtgaard" "Olivier Nicole" "Nicolas Osborne" "Samuel Hym")
 (maintainers "Jan Midtgaard <mail@janmidtgaard.dk>")
 (license BSD-2-clause)
-(version "0.1")
+(version "0.1.1")
 
 (package
  (name multicoretests)
@@ -33,7 +33,8 @@ sequential and parallel tests against a declarative model.")
  (depends
   base-domains
   (qcheck-core           (>= "0.20"))
-  (qcheck-multicoretests-util (= :version))))
+  (qcheck-multicoretests-util (= :version))
+  (ppx_deriving          (and :with-test (>= "5.2.1")))))
 
 (package
  (name qcheck-lin)
@@ -47,7 +48,8 @@ and explained by some sequential interleaving.")
  (depends
   base-domains
   (qcheck-core           (>= "0.20"))
-  (qcheck-multicoretests-util (= :version))))
+  (qcheck-multicoretests-util (= :version))
+  (ppx_deriving          (and :with-test (>= "5.2.1")))))
 
 (package
  (name qcheck-multicoretests-util)
