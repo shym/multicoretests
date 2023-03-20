@@ -93,8 +93,8 @@ jobs:
   build-and-test:
     env:
       QCHECK_MSG_INTERVAL:      '60'
-      DUNE_PROFILE:             ${{ inputs.dune_profile }}
-      OCAMLRUNPARAM:            ${{ inputs.runparam }}
+      DUNE_PROFILE:             'debug-runtime'
+      OCAMLRUNPARAM:            'v=0,V=1'
       ONLY_TEST:                'src/threadomain/threadomain.exe'
       SEED:                     ${{ inputs.seed }}
       REPEATS:                  '3000'
