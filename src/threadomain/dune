@@ -5,6 +5,7 @@
  (modules threadomain)
  (package multicoretests)
  (libraries util qcheck-core threads)
+ (flags -w -32)
  (preprocess (pps ppx_deriving.show))
  (action (run %{test} --verbose))
 )
