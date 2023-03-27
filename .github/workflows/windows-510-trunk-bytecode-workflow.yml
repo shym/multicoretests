@@ -8,4 +8,6 @@ jobs:
     with:
       runs_on: windows-latest
       compiler: ocaml.5.1.0,ocaml-option-mingw,ocaml-option-bytecode-only
+      custom_compiler_version: '5.1.0+trunk-dbd36ae1a5f06a599434f2cca6261aacca4bdf91'
+      custom_compiler_src: 'https://github.com/ocaml/ocaml/archive/dbd36ae1a5f06a599434f2cca6261aacca4bdf91.tar.gz'
       timeout: 360
