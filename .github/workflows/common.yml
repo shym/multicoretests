@@ -175,7 +175,7 @@ jobs:
             then OPTS="";
             else OPTS=",${COMPILER#*,}";
             fi
-            echo "COMPILER=ocaml-variants.$CUSTOM_COMPILER_VERSION$OPTS" >> "$GITHUB_ENV"
+            #echo "COMPILER=ocaml-variants.$CUSTOM_COMPILER_VERSION$OPTS" >> "$GITHUB_ENV"
             cat "$GITHUB_ENV"
           fi
 
