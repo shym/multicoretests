@@ -269,7 +269,7 @@ jobs:
           opam repository add --all windows "https://github.com/fdopen/opam-repository-mingw.git#opam2"
           opam repository add --all override "https://github.com/shym/custom-opam-repository.git"
           opam repository add --all dra27 "https://github.com/dra27/opam-repository.git#windows-5.0"
-          opam repository add --all local "./.github/opam/custom/"
+          opam repository add --all local "./.github/opam/custom"
           opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
         if: "runner.os == 'Windows' && inputs.cygwin && steps.cache_opam.outputs.cache-hit != 'true'"
 
@@ -289,6 +289,7 @@ jobs:
           opam config list
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
+          opam list -A --repos=local
 
       - name: Save OPAM state (Cygwin)
         uses: actions/cache/save@v3
