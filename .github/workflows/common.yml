@@ -223,7 +223,7 @@ jobs:
             default: https://github.com/fdopen/opam-repository-mingw.git#opam2
             upstream: https://github.com/ocaml/opam-repository.git
           opam-depext: false
-          cache-prefix: ${{ steps.presetup.outputs.cache_prefix }}
+          cache-prefix: v2
         if: "runner.os == 'Windows' && inputs.cygwin == ''"
 
       - name: Restore Cygwin packages (Cygwin)
