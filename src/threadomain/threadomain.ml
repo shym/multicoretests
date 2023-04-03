@@ -86,7 +86,7 @@ let gen_spawn_join sz =
 type handle =
   | NoHdl
   | DomainHdl of unit Domain.t
-  | ThreadHdl of Thread.t
+  | ThreadHdl of unit
 
 (* All the node handles.
    Since they’ll be used to join, they are stored in join_permutation
@@ -104,8 +104,7 @@ let join_one hdls i =
     | NoHdl -> failwith "Semaphore acquired but no handle to join"
     | DomainHdl h -> ( Domain.join h ;
                        hdls.handles.(i) <- NoHdl )
-    | ThreadHdl h -> ( Thread.join h ;
-                       hdls.handles.(i) <- NoHdl ) )
+    | ThreadHdl _ -> failwith "No systhreads" )
 
 (** In this first test each spawned domain calls [work] - and then optionally join. *)
 (* a simple work item, from ocaml/testsuite/tests/misc/takc.ml *)
@@ -130,7 +129,7 @@ let rec spawn_one sj hdls i =
   hdls.handles.(sj.join_permutation.(i)) <-
     if sj.domain_or.(i)
     then DomainHdl (Domain.spawn (run_node sj hdls i))
-    else ThreadHdl (Thread.create (run_node sj hdls i) ()) ;
+    else ThreadHdl (failwith "No systhreads") ;
   Semaphore.Binary.release hdls.available.(sj.join_permutation.(i))
 
 and run_node sj hdls i () =
