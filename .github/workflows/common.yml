@@ -101,9 +101,9 @@ jobs:
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       SUBSUITE:                 ${{ inputs.subsuite }}
       COMPILER:                 ${{ inputs.compiler }}
-      OCAML_COMPILER_GIT_REF:   ''
-      CUSTOM_COMPILER_VERSION:  '5.1.0+sleepfix'
-      CUSTOM_COMPILER_SRC:      'https://github.com/shym/ocaml/archive/usleep-win.tar.gz'
+      OCAML_COMPILER_GIT_REF:   ${{ inputs.compiler_git_ref }}
+      CUSTOM_COMPILER_VERSION:  ${{ inputs.custom_compiler_version }}
+      CUSTOM_COMPILER_SRC:      ${{ inputs.custom_compiler_src }}
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
       OVERRIDE_APT_INSTALL:     ${{ inputs.override_apt_install }}
 
@@ -223,7 +223,7 @@ jobs:
             default: https://github.com/fdopen/opam-repository-mingw.git#opam2
             upstream: https://github.com/ocaml/opam-repository.git
           opam-depext: false
-          cache-prefix: v2
+          cache-prefix: ${{ steps.presetup.outputs.cache_prefix }}
         if: "runner.os == 'Windows' && inputs.cygwin == ''"
 
       - name: Restore Cygwin packages (Cygwin)
