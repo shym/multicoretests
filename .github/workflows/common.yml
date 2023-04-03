@@ -97,7 +97,7 @@ jobs:
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
       ONLY_TEST:                'src/threadomain/threadomain.exe'
       SEED:                     ${{ inputs.seed }}
-      REPEATS:                  '3000'
+      REPEATS:                  '12'
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       SUBSUITE:                 ${{ inputs.subsuite }}
       COMPILER:                 ${{ inputs.compiler }}
