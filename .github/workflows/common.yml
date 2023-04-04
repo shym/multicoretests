@@ -259,7 +259,7 @@ jobs:
         with:
           path: |
             D:\opam
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-opam-${{ env.COMPILER }}
+          key: v2-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
@@ -291,7 +291,7 @@ jobs:
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
           opam list -A --repos=local
-          opam remote -v
+          opam remote -v --all
 
       - name: Save OPAM state (Cygwin)
         uses: actions/cache/save@v3
@@ -300,7 +300,7 @@ jobs:
         with:
           path: |
             D:\opam
-          key: ${{ steps.presetup.outputs.cache_prefix }}-cygwin-opam-${{ env.COMPILER }}
+          key: v2-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Build the test suite
@@ -322,28 +322,28 @@ jobs:
       - name: Run only one test
         shell: bash
         run: |
-          failures=0
-          for i in `seq "$REPEATS"`; do
-            echo
-            echo "Starting $i-th run"
-            if [ -n "$SEED" ]; then
-              if ! opam exec -- dune exec "$ONLY_TEST" -- -v -s "$SEED"; then
-                if [ "$REPEATS_FAILFAST" = "true" ]; then
-                  exit 1
-                else
-                  failures=$((failures + 1))
-                fi
-              fi
-            else
-              if ! opam exec -- dune exec "$ONLY_TEST" -- -v; then
-                if [ "$REPEATS_FAILFAST" = "true" ]; then
-                  exit 1
-                else
-                  failures=$((failures + 1))
-                fi
-              fi
-            fi
-          done
-          echo "Test failed $failures times"
-          [ "$failures" = 0 ]
+          failures=0                                                          #
+          for i in `seq "$REPEATS"`; do                                       #
+            echo                                                              #
+            echo "Starting $i-th run"                                         #
+            if [ -n "$SEED" ]; then                                           #
+              if ! opam exec -- dune exec "$ONLY_TEST" -- -v -s "$SEED"; then #
+                if [ "$REPEATS_FAILFAST" = "true" ]; then                     #
+                  exit 1                                                      #
+                else                                                          #
+                  failures=$((failures + 1))                                  #
+                fi                                                            #
+              fi                                                              #
+            else                                                              #
+              if ! opam exec -- dune exec "$ONLY_TEST" -- -v; then            #
+                if [ "$REPEATS_FAILFAST" = "true" ]; then                     #
+                  exit 1                                                      #
+                else                                                          #
+                  failures=$((failures + 1))                                  #
+                fi                                                            #
+              fi                                                              #
+            fi                                                                #
+          done                                                                #
+          echo "Test failed $failures times"                                  #
+          [ "$failures" = 0 ]                                                 #
         if: env.ONLY_TEST != ''
