@@ -317,7 +317,8 @@ jobs:
         run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice @(-Split $Env:SUBSUITE)
         if: "runner.os == 'Windows' && env.ONLY_TEST == ''"
 
-      - name: Run only one test (Linux / macOS)
+      - name: Run only one test
+        shell: bash
         run: |
           failures=0
           for i in `seq "$REPEATS"`; do
@@ -343,24 +344,4 @@ jobs:
           done
           echo "Test failed $failures times"
           [ "$failures" = 0 ]
-        if: env.ONLY_TEST != '' && runner.os != 'Windows'
-
-      - name: Run only one test (Windows)
-        run: |
-          if("${env:REPEATS_FAILFAST}" -eq "false") {
-            $ErrorActionPreference = 'Continue'
-          }
-          $failures = 0
-          for($i = 1; $i -le "${env:REPEATS}"; $i++) {
-            echo ""
-            echo "Starting $i-th run"
-            if("${env:SEED}" -eq "") {
-              opam exec -- dune exec "${env:ONLY_TEST}" -- -v
-              if($? -eq 0) { $failures += 1 }
-            } else {
-              opam exec -- dune exec "${env:ONLY_TEST}" -- -v -s "${env:SEED}"
-              if($? -eq 0) { $failures += 1 }
-            }
-          }
-          echo "Test failed $failures times"
-        if: env.ONLY_TEST != '' && runner.os == 'Windows'
+        if: env.ONLY_TEST != ''
