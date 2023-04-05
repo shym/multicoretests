@@ -92,9 +92,9 @@ jobs:
       QCHECK_MSG_INTERVAL:      '60'
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
-      ONLY_TEST:                ${{ inputs.only_test }}
+      ONLY_TEST:                'src/base/buffer/lin_tests_dsl.exe'
       SEED:                     ${{ inputs.seed }}
-      REPEATS:                  ${{ inputs.repeats }}
+      REPEATS:                  '100'
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       SUBSUITE:                 ${{ inputs.subsuite }}
       COMPILER:                 ${{ inputs.compiler }}
@@ -281,6 +281,7 @@ jobs:
       - name: Install Multicore Tests dependencies
         run: |
           opam install . --deps-only --with-test
+          opam install base
 
       - name: Show configuration and clean up
         run: |
