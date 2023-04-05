@@ -1,0 +1,8 @@
+(test
+ (name lin_tests_dsl)
+ (modules lin_tests_dsl)
+ (package multicoretests)
+ (enabled_if %{lib-available:base})
+ (libraries qcheck-lin.domain base)
+ (action (run %{test} --verbose))
+)
