@@ -259,7 +259,7 @@ jobs:
         with:
           path: |
             D:\opam
-          key: v2-cygwin-opam-${{ env.COMPILER }}
+          key: v3-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Install OCaml compiler ${{ env.COMPILER }} (Cygwin)
@@ -303,7 +303,7 @@ jobs:
         with:
           path: |
             D:\opam
-          key: v2-cygwin-opam-${{ env.COMPILER }}
+          key: v3-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Build the test suite
