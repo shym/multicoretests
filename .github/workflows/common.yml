@@ -273,19 +273,17 @@ jobs:
           opam repository add --all dra27 "https://github.com/dra27/opam-repository.git#windows-5.0"
           echo "Adding ${env:REPODIR}"
           Get-Item "${env:REPODIR}\*"
-          opam repository add --all local "file://${env:REPODIR}\.github\opam\custom"
           opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
         if: "runner.os == 'Windows' && inputs.cygwin && steps.cache_opam.outputs.cache-hit != 'true'"
+
+      - name: Retry
+        run: |
+          opam repository add --all bob "file:///cygdrive/d/a/multicoretests/multicoretests/.github/opam/custom"
 
       - name: Set up macOS environment ($OPAMJOBS)
         if: runner.os == 'macOS'
         run: |
           echo "OPAMJOBS=1" >> $GITHUB_ENV
-
-      - name: Install Multicore Tests dependencies
-        run: |
-          opam install . --deps-only --with-test
-          opam clean --all-switches --unused-repositories --logs --download-cache --repo-cache
 
       - name: Show configuration
         run: |
@@ -293,8 +291,17 @@ jobs:
           opam config list
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
-          opam list -A --repos=local
+          opam list -A --repos=bob
           opam remote -v --all
+
+      - name: Retry
+        run: |
+          opam repository add --all random "file:///cygdrive/d/random/path"
+
+      - name: Check
+        shell: bash
+        run: |
+          find .github
 
       - name: Save OPAM state (Cygwin)
         uses: actions/cache/save@v3
@@ -305,48 +312,3 @@ jobs:
             D:\opam
           key: v3-cygwin-opam-${{ env.COMPILER }}
         if: "runner.os == 'Windows' && inputs.cygwin"
-
-      - name: Build the test suite
-        run: opam exec -- dune build
-        if: env.ONLY_TEST == ''
-
-      - name: Run the internal package tests
-        run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice test/
-        if: env.ONLY_TEST == ''
-
-      - name: Run the multicore test suite (Linux / macOS)
-        run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice $SUBSUITE
-        if: "runner.os != 'Windows' && env.ONLY_TEST == ''"
-
-      - name: Run the multicore test suite (Windows / Cygwin)
-        run: opam exec -- dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice @(-Split $Env:SUBSUITE)
-        if: "runner.os == 'Windows' && env.ONLY_TEST == ''"
-
-      - name: Run only one test
-        shell: bash
-        run: |
-          failures=0
-          for i in `seq "$REPEATS"`; do
-            echo
-            echo "Starting $i-th run"
-            if [ -n "$SEED" ]; then
-              if ! opam exec -- dune exec "$ONLY_TEST" -- -v -s "$SEED"; then
-                if [ "$REPEATS_FAILFAST" = "true" ]; then
-                  exit 1
-                else
-                  failures=$((failures + 1))
-                fi
-              fi
-            else
-              if ! opam exec -- dune exec "$ONLY_TEST" -- -v; then
-                if [ "$REPEATS_FAILFAST" = "true" ]; then
-                  exit 1
-                else
-                  failures=$((failures + 1))
-                fi
-              fi
-            fi
-          done
-          echo "Test failed $failures times"
-          [ "$failures" = 0 ]
-        if: env.ONLY_TEST != ''
