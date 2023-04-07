@@ -276,7 +276,7 @@ jobs:
           opam repository add --all dra27 "https://github.com/dra27/opam-repository.git#windows-5.0"
           opam repository add --all local "file://${env:CYGWORKSPACE}/.github/opam/custom/"
           opam remote -v --all
-          opam list -A --repos=local
+          opam list -A --repos=local --columns=name,all-versions,synopsis-or-target
           opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
         if: "runner.os == 'Windows' && inputs.cygwin && steps.cache_opam.outputs.cache-hit != 'true'"
 
