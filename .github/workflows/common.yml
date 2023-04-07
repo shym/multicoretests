@@ -116,6 +116,9 @@ jobs:
 
     steps:
       - name: Configure environment (Cygwin)
+        env:
+          WORKSPACE_WIN: ${{ github.workspace }}
+          WORKSPACE_CYG: '/cygdrive/d/a/multicoretests/multicoretests'
         run: |
           # Ensure that .expected files are not modified by check out
           # as, in Cygwin, the .expected should use LF line endings,
@@ -126,6 +129,8 @@ jobs:
           # Cygwin case
           echo OPAMYES=1 >> $env:GITHUB_ENV
           echo OPAMROOT=/cygdrive/d/opam >> $env:GITHUB_ENV
+          echo "CYGWORKSPACE=$env:WORKSPACE_CYG" >> $env:GITHUB_ENV
+          echo "$env:WORKSPACE_CYG must be the Cygwin equivalent of $env:WORKSPACE_WIN for local repo to work"
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Checkout code
@@ -269,7 +274,7 @@ jobs:
           opam repository add --all windows "https://github.com/fdopen/opam-repository-mingw.git#opam2"
           opam repository add --all override "https://github.com/shym/custom-opam-repository.git"
           opam repository add --all dra27 "https://github.com/dra27/opam-repository.git#windows-5.0"
-          opam repository add --all local "./.github/opam/custom/"
+          opam repository add --all local "file://${env:CYGWORKSPACE}/.github/opam/custom/"
           opam switch create default --repositories=dra27,override,windows,main --packages "${env:COMPILER}"
         if: "runner.os == 'Windows' && inputs.cygwin && steps.cache_opam.outputs.cache-hit != 'true'"
 
