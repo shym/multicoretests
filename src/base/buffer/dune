@@ -1,8 +1,14 @@
-(test
+(executable
  (name lin_tests_dsl)
  (modules lin_tests_dsl)
+; (enabled_if %{lib-available:base})
+ (enabled_if (<> %{env:CI} true))
+ (libraries qcheck-lin.domain base)
+)
+
+(rule
+ (alias runtest)
  (package multicoretests)
  (enabled_if %{lib-available:base})
- (libraries qcheck-lin.domain base)
- (action (run %{test} --verbose))
+ (action (run %{dep:lin_tests_dsl.exe} --verbose))
 )
