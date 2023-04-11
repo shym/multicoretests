@@ -1,4 +1,4 @@
-open Base
+module Buffer = BaseOrNoBase.Buffer
 
 module BBConf = struct
   type t = Buffer.t

@@ -3,6 +3,9 @@
  (modules lin_tests_dsl)
  (package multicoretests)
  (enabled_if %{lib-available:base})
- (libraries qcheck-lin.domain base)
+ (libraries qcheck-lin.domain
+  (select BaseOrNoBase.ml from
+   (base -> passthrough.ml)
+   (-> fallback.ml)))
  (action (run %{test} --verbose))
 )
