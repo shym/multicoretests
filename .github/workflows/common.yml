@@ -99,7 +99,7 @@ jobs:
       SUBSUITE:                 ${{ inputs.subsuite }}
       COMPILER:                 ${{ inputs.compiler }}
       OCAML_COMPILER_GIT_REF:   'refs/pull/12131/head'
-      CUSTOM_COMPILER_VERSION:  '5.2.0+pr12131'
+      CUSTOM_COMPILER_VERSION:  '5.1.0+pr12131'
       CUSTOM_COMPILER_SRC:      'https://github.com/ocaml/ocaml/archive/refs/pull/12131/head.tar.gz'
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
       OVERRIDE_APT_INSTALL:     ${{ inputs.override_apt_install }}
