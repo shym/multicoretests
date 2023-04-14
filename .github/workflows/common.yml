@@ -280,6 +280,7 @@ jobs:
 
       - name: Install Multicore Tests dependencies
         run: |
+          opam pin ppxlib "https://github.com/ocaml-ppx/ppxlib.git#b1b680476711da23773e4d88e200ee244294adf0"
           opam install . --deps-only --with-test
 
       - name: Show configuration and clean up
