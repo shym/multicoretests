@@ -184,7 +184,7 @@ jobs:
           else
             cache_prefix=v1
           fi
-          echo "cache_prefix=v2" >> "$GITHUB_OUTPUT"
+          echo "cache_prefix=v3" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
 
           # Override `sudo` on Linux, `brew` on macOS, to speed up installation
