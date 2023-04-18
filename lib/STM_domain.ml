@@ -38,7 +38,7 @@ module Make (Spec: Spec) = struct
     let rep_count = 25 in
     let seq_len,par_len = 20,12 in
     let max_gen = 3*count in (* precond filtering may require extra generation: max. 3*count though *)
-    Test.make ~retries:10 ~max_gen ~count ~name
+    Util.make_test ~show_cmd:Spec.show_cmd ~retries:10 ~max_gen ~count ~name
       (arb_cmds_triple seq_len par_len)
       (fun ((seq_pref,cmds1,cmds2) as triple) ->
          assume (all_interleavings_ok seq_pref cmds1 cmds2 Spec.init_state);
@@ -48,9 +48,29 @@ module Make (Spec: Spec) = struct
     let rep_count = 25 in
     let seq_len,par_len = 20,12 in
     let max_gen = 3*count in (* precond filtering may require extra generation: max. 3*count though *)
-    Test.make_neg ~retries:10 ~max_gen ~count ~name
+    Util.make_neg_test ~show_cmd:Spec.show_cmd ~retries:10 ~max_gen ~count ~name
       (arb_cmds_triple seq_len par_len)
-      (fun ((seq_pref,cmds1,cmds2) as triple) ->
-         assume (all_interleavings_ok seq_pref cmds1 cmds2 Spec.init_state);
-         repeat rep_count agree_prop_par triple) (* 25 times each, then 25 * 15 times when shrinking *)
-  end
+      (fun triple ->
+         assume (all_interleavings_ok triple);
+         repeat rep_count agree_prop_par triple) (* 25 times each, then 25 * 10 times when shrinking *)
+
+  let agree_test_par_asym ~count ~name =
+    let rep_count = 25 in
+    let seq_len,par_len = 20,12 in
+    let max_gen = 3*count in (* precond filtering may require extra generation: max. 3*count though *)
+    Util.make_test ~show_cmd:Spec.show_cmd ~retries:10 ~max_gen ~count ~name
+      (arb_cmds_triple seq_len par_len)
+      (fun triple ->
+         assume (all_interleavings_ok triple);
+         repeat rep_count agree_prop_par_asym triple) (* 25 times each, then 25 * 10 times when shrinking *)
+
+  let neg_agree_test_par_asym ~count ~name =
+    let rep_count = 25 in
+    let seq_len,par_len = 20,12 in
+    let max_gen = 3*count in (* precond filtering may require extra generation: max. 3*count though *)
+    Util.make_neg_test ~show_cmd:Spec.show_cmd ~retries:10 ~max_gen ~count ~name
+      (arb_cmds_triple seq_len par_len)
+      (fun triple ->
+         assume (all_interleavings_ok triple);
+         repeat rep_count agree_prop_par_asym triple) (* 25 times each, then 25 * 10 times when shrinking *)
+end
