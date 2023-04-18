@@ -98,9 +98,9 @@ jobs:
       REPEATS_FAILFAST:         ${{ inputs.repeats_failfast }}
       SUBSUITE:                 ${{ inputs.subsuite }}
       COMPILER:                 ${{ inputs.compiler }}
-      OCAML_COMPILER_GIT_REF:   ${{ inputs.compiler_git_ref }}
-      CUSTOM_COMPILER_VERSION:  ${{ inputs.custom_compiler_version }}
-      CUSTOM_COMPILER_SRC:      ${{ inputs.custom_compiler_src }}
+      OCAML_COMPILER_GIT_REF:   'refs/pull/12190/head'
+      CUSTOM_COMPILER_VERSION:  '5.2.0+pr12190'
+      CUSTOM_COMPILER_SRC:      'https://github.com/ocaml/ocaml/archive/refs/pull/12190/head.tar.gz'
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
       OVERRIDE_APT_INSTALL:     ${{ inputs.override_apt_install }}
 
@@ -138,7 +138,6 @@ jobs:
           if [ "${COMPILER##*32bit}" = "" ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update
-            echo "LDFLAGS=-L/usr/lib/i386-linux-gnu/" >> $GITHUB_ENV
           fi
 
           # Generate an OPAM config for a custom compiler
