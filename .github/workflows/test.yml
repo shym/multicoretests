@@ -1,0 +1,28 @@
+name: Test
+
+on: [push]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install OCaml compiler
+        uses: ocaml/setup-ocaml@v2
+        with:
+          ocaml-compiler: 'ocaml-base-compiler.5.0.0'
+
+      - name: Show configuration and clean up
+        run: |
+          opam exec -- ocamlc -config
+          opam config list
+
+      - name: Build the test
+        run: opam exec make
+
+      - name: Run the test
+        run: ./OutChannelTester.exe
