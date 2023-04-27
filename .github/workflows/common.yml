@@ -278,30 +278,15 @@ jobs:
 
       - name: Retry
         run: |
-          opam repository add --all bob "file:///cygdrive/d/a/multicoretests/multicoretests/.github/opam/custom"
-
-      - name: Set up macOS environment ($OPAMJOBS)
-        if: runner.os == 'macOS'
-        run: |
-          echo "OPAMJOBS=1" >> $GITHUB_ENV
+          opam repository add --all -k local bob ".github/opam/custom"
 
       - name: Show configuration
         run: |
           opam exec -- ocamlc -config
           opam config list
-          opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
           opam list -A --repos=bob
           opam remote -v --all
-
-      - name: Retry
-        run: |
-          opam repository add --all random "file:///cygdrive/d/random/path"
-
-      - name: Check
-        shell: bash
-        run: |
-          find .github
 
       - name: Save OPAM state (Cygwin)
         uses: actions/cache/save@v3
