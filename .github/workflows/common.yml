@@ -284,8 +284,8 @@ jobs:
           opam config list
           opam exec -- dune printenv
           opam list --columns=name,installed-version,repository,synopsis-or-target
-          opam clean --all-switches --unused-repositories --logs --download-cache --repo-cache
           opam list -A --repos=local
+          opam clean --all-switches --unused-repositories --logs --download-cache --repo-cache
 
       - name: Save OPAM state (Cygwin)
         uses: actions/cache/save@v3
