@@ -181,7 +181,7 @@ jobs:
           else
             cache_prefix=v1
           fi
-          echo "cache_prefix=$cache_prefix" >> "$GITHUB_OUTPUT"
+          echo "cache_prefix=v42" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
 
           # Save pristine PATH for cache action (Cygwin messes it up)
