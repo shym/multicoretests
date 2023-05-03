@@ -14,10 +14,11 @@ let make_test ?if_assumptions_fail ?count ?long_factor ?max_gen ?max_fail ?small
   let law =
     match (show_cmd, !log_triple_channels) with
     | Some show_cmd, Some oc ->
+        let show_cmd x = "(fun t -> " ^ show_cmd x ^ " |> ignore)" in
         fun trp ->
-          Printf.fprintf oc "Triple: %s\n%!" QCheck.Print.(triple (list show_cmd) (list show_cmd) (list show_cmd) trp);
+          Printf.fprintf oc "%s;\n%!" QCheck.Print.(triple (list show_cmd) (list show_cmd) (list show_cmd) trp);
           let res = law trp in
-          Printf.fprintf oc " -> %b\n%!" res;
+          Printf.fprintf oc "(* -> %b *)\n%!" res;
           res
     | _, None -> law
     | None, Some _ -> invalid_arg "show_cmd optional argument must be set when logging is enabled"
@@ -28,10 +29,11 @@ let make_neg_test ?if_assumptions_fail ?count ?long_factor ?max_gen ?max_fail ?s
   let law =
     match (show_cmd, !log_triple_channels) with
     | Some show_cmd, Some oc ->
+        let show_cmd x = "(fun t -> " ^ show_cmd x ^ " |> ignore)" in
         fun trp ->
-          Printf.fprintf oc "Triple: %s\n%!" QCheck.Print.(triple (list show_cmd) (list show_cmd) (list show_cmd) trp);
+          Printf.fprintf oc "%s;\n%!" QCheck.Print.(triple (list show_cmd) (list show_cmd) (list show_cmd) trp);
           let res = law trp in
-          Printf.fprintf oc " -> %b\n%!" res;
+          Printf.fprintf oc "(* -> %b *)\n%!" res;
           res
     | _, None -> law
     | None, Some _ -> invalid_arg "show_cmd optional argument must be set when logging is enabled"
