@@ -80,9 +80,11 @@ on:
           Defaults to custom_compiler_version chunked at [+~-]
         type: string
         default: ''
+    outputs:
+      skippart2: ${{ jobs.test.outputs.skippart2 }}
 
 jobs:
-  build-and-test:
+  test:
     env:
       QCHECK_MSG_INTERVAL:      '60'
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
@@ -107,6 +109,9 @@ jobs:
     runs-on: ${{ inputs.runs_on }}
 
     timeout-minutes: ${{ inputs.timeout }}
+
+    outputs:
+      skippart2: ${{ steps.winonlyone.outputs.skippart2 }}
 
     steps:
       - name: Configure environment (Cygwin)
@@ -334,7 +339,9 @@ jobs:
         if: env.ONLY_TEST != '' && runner.os != 'Windows'
 
       - name: Run only one test (Windows)
+        id: winonlyone
         run: |
+          echo "skippart2=true" >> "${env:GITHUB_OUTPUT}"
           if("${env:REPEATS_FAILFAST}" -eq "false") {
             $ErrorActionPreference = 'Continue'
           }
