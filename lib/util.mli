@@ -41,6 +41,12 @@ val print_triple_vertical :
 val protect : ('a -> 'b) -> 'a -> ('b, exn) result
 (** [protect f] turns an [exception] throwing function into a [result] returning function. *)
 
+val tag_exn_with : ('a -> string) -> ('a -> 'b) -> 'a -> 'b
+(** [tag_exn_with show run x] behaves as [run x] unless raises an
+    uncaught exception in which case it will wrap that exception along
+    with [show x] into an internal exception. That exception will be
+    printed as: ["... raised but not caught while running " ^ show x]. *)
+
 module Pp : sig
   (** Pretty-printing combinators that generate valid OCaml syntax for common
       types along with combinators for user-defined types *)
