@@ -479,6 +479,9 @@ module MakeCmd (ApiSpec : Spec) : Internal.CmdSpec = struct
       apply_f (f arg) rem state
 
   let run cmd state =
-    let Cmd { args ; rty ; f ; _ } = cmd in
-    Res (rty, apply_f f args state)
+    Util.tag_exn_with show_cmd
+      (fun cmd ->
+        let (Cmd { args; rty; f; _ }) = cmd in
+        Res (rty, apply_f f args state))
+      cmd
 end
