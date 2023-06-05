@@ -81,7 +81,9 @@ on:
         type: string
         default: ''
     outputs:
-      skippart2: ${{ jobs.test.outputs.skippart2 }}
+      skippart2:
+        description: 'Whether Part 2 (Cygwin workflow) should be skipped (because we are running only one test)'
+        value: ${{ jobs.test.outputs.skippart2 }}
 
 jobs:
   test:
