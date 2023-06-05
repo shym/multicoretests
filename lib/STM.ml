@@ -170,7 +170,7 @@ struct
     let rec interp_agree s sut cs = match cs with
       | [] -> true
       | c::cs ->
-        let res = Spec.run c sut in
+        let res = Util.tag_exn_with Spec.show_cmd (fun c -> Spec.run c sut) c in
         let b   = Spec.postcond c s res in
         let s'  = Spec.next_state c s in
         b && interp_agree s' sut cs
@@ -178,7 +178,7 @@ struct
     let rec check_disagree s sut cs = match cs with
       | [] -> None
       | c::cs ->
-        let res = Spec.run c sut in
+        let res = Util.tag_exn_with Spec.show_cmd (fun c -> Spec.run c sut) c in
         let b   = Spec.postcond c s res in
         let s'  = Spec.next_state c s in
         if b
