@@ -184,7 +184,7 @@ jobs:
           if [ -n "$OCAML_COMPILER_GIT_REF" ]; then
             cache_prefix="$(git ls-remote https://github.com/ocaml/ocaml.git "$OCAML_COMPILER_GIT_REF" | cut -f 1 | head -n 1)"
           else
-            cache_prefix=precise
+            cache_prefix=original
           fi
           echo "cache_prefix=$cache_prefix" >> "$GITHUB_OUTPUT"
           cat "$GITHUB_OUTPUT"
