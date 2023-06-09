@@ -10,6 +10,7 @@
 
 (alias
  (name runtest)
+ (package multicoretests)
  (deps
   ; (alias_rec test/runtest) (alias_rec src/runtest)))
   (alias onetest)))
@@ -18,6 +19,7 @@
 ; times and report at the end whether this worked
 (rule
  (alias onetest)
+ (package multicoretests)
  (deps src/thread/thread_joingraph.exe)
  (action
   (bash
