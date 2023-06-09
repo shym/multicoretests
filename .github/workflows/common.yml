@@ -297,4 +297,4 @@ jobs:
         if: "runner.os == 'Windows' && inputs.cygwin"
 
       - name: Build the @@runtest alias
-        run: opam exec -- dune build @@runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
+        run: opam exec -- dune build "@@runtest" -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
