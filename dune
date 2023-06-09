@@ -7,3 +7,18 @@
  (name default)
  (package multicoretests)
  (deps (alias src/default)))
+
+(alias
+ (name runtest)
+ (deps
+  (alias_rec test/runtest) (alias_rec src/runtest)))
+  ; (alias onetest)))
+
+; A rule to repeat the test executable given as dependency a couple of
+; times and report at the end whether this worked
+(rule
+ (alias onetest)
+ (deps src/thread/thread_joingraph.exe)
+ (action
+  (bash
+   "fails=0; for i in `seq 20`; do echo Starting $i-th run; %{deps} -v || fails=$((fails+1)); done; echo Test failed $fails times; [ $fails = 0 ]")))
