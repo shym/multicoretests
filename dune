@@ -14,8 +14,8 @@
  (name ci)
  (package multicoretests)
  (deps
-  (alias_rec runtest)))
-  ; (alias focusedtest)))
+  ; (alias_rec runtest)))
+  (alias focusedtest)))
 
 
 ; @focusedtest
@@ -27,7 +27,7 @@
 
 ; To change the test to repeat, change the source of the `copy`:
 (rule
- (copy src/thread/thread_joingraph.exe focusedtest.exe))
+ (copy src/io/lin_tests_dsl_domain.exe focusedtest.exe))
 
 (rule
  (alias focusedtest)
