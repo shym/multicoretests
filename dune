@@ -8,19 +8,52 @@
  (package multicoretests)
  (deps (alias src/default)))
 
+; The alias to control what is run in CI
+; It can either be the full test suite, or focus on a single test
 (alias
- (name runtest)
+ (name ci)
  (package multicoretests)
  (deps
-  (alias_rec test/runtest) (alias_rec src/runtest)))
-  ; (alias onetest)))
+  (alias_rec runtest)))
+  ; (alias focusedtest)))
+
+
+; @focusedtest
+; repeat a single test a couple of times
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; A rule to repeat the test executable given as dependency a couple of
 ; times and report at the end whether this worked
+
+; To change the test to repeat, change the source of the `copy`:
 (rule
- (alias onetest)
+ (copy src/thread/thread_joingraph.exe focusedtest.exe))
+
+(rule
+ (alias focusedtest)
  (package multicoretests)
- (deps src/thread/thread_joingraph.exe)
+ (deps focusedtest.exe)
+ (enabled_if (<> %{os_type} Win32))
  (action
-  (bash
-   "fails=0; for i in `seq 20`; do echo Starting $i-th run; %{deps} -v || fails=$((fails+1)); done; echo Test failed $fails times; [ $fails = 0 ]")))
+  (no-infer
+   (progn
+    (write-file %{env:GITHUB_OUTPUT=dummy_file} "skipnextjob=true")
+    (write-file hoped "")
+    (write-file failed-runs "")
+    (bash
+     "for i in `seq 20`; do echo Starting $i-th run; if ! ./focusedtest.exe -v ; then echo $i >> failed-runs; fi; done")
+    (diff failed-runs hoped)))))
+
+(rule
+ (alias focusedtest)
+ (package multicoretests)
+ (deps focusedtest.exe)
+ (enabled_if (= %{os_type} Win32))
+ (action
+  (no-infer
+   (progn
+    (write-file %{env:GITHUB_OUTPUT=dummy_file} "skipnextjob=true")
+    (write-file hoped "")
+    (write-file failed-runs "")
+    (run cmd /q /c "for %G in (1,2,3,4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20) do (echo Starting %G-th run && focusedtest.exe -v || echo %G >> failed-runs)")
+    (diff failed-runs hoped)))))
