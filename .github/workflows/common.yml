@@ -28,10 +28,10 @@ on:
         description: 'OCAMLRUNPARAM to use'
         type: string
         default: ''
-      subsuite:
-        description: 'Directories which should be taken as part of the test suite'
+      target:
+        description: 'dune target that should be built in the main step'
         type: string
-        default: 'src'
+        default: '@ci'
       compiler:
         description: 'Compiler to use'
         type: string
@@ -75,7 +75,7 @@ jobs:
       QCHECK_MSG_INTERVAL:      '60'
       DUNE_PROFILE:             ${{ inputs.dune_profile }}
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
-      SUBSUITE:                 ${{ inputs.subsuite }}
+      DUNETARGET:               ${{ inputs.target }}
       COMPILER:                 ${{ inputs.compiler }}
       OCAML_COMPILER_GIT_REF:   ${{ inputs.compiler_git_ref }}
       CUSTOM_COMPILER_VERSION:  ${{ inputs.custom_compiler_version }}
@@ -285,10 +285,10 @@ jobs:
         if: env.ONLY_TEST == ''
 
       - name: Run the multicore test suite (Linux / macOS)
-        run: opam exec -- dune build @ci -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice $SUBSUITE
+        run: opam exec -- dune build $DUNETARGET -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
         if: runner.os != 'Windows'
 
       - name: Run the multicore test suite (Windows / Cygwin)
         id: winonlysuite
-        run: opam exec -- dune build @ci -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice @(-Split $Env:SUBSUITE)
+        run: opam exec -- dune build $Env:DUNETARGET -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
         if: runner.os == 'Windows'
