@@ -63,7 +63,7 @@
 (rule
  (alias focusedtest)
  (package multicoretests)
- (deps focusedtest.exe)
+ (deps focusedtest.exe (universe))
  (enabled_if (<> %{os_type} Win32))
  (action
   (no-infer
@@ -81,7 +81,7 @@
 (rule
  (alias focusedtest)
  (package multicoretests)
- (deps focusedtest.exe)
+ (deps focusedtest.exe (universe))
  (enabled_if (= %{os_type} Win32))
  (action
   (no-infer
