@@ -284,4 +284,4 @@ jobs:
 
       - name: Run the multicore test suite
         id: mainstep
-        run: opam exec -- dune build @ci -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
+        run: opam exec -- dune build @ci -j1 --no-buffer --cache=disabled --error-reporting=twice --verbose
