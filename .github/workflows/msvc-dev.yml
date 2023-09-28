@@ -78,10 +78,11 @@ jobs:
           make install PREFIX='D:\ocaml'                                                   #
         if: "steps.cache.outputs.cache-hit != 'true'"
 
-      - name: Display configuration
+      - name: Display configuration and set up PATH
         run: |
           D:\ocaml\bin\ocamlc -config
           D:\ocaml\bin\dune --version
+          echo "D:\ocaml\bin" >> ${env:GITHUB_PATH}
 
       - name: Save cache
         uses: actions/cache/save@v3
@@ -110,16 +111,12 @@ jobs:
         shell: bash -e {0}
         run: |
           eval $(ocaml/tools/msvs-promote-path)     #
-          export PATH="/cygdrive/d/ocaml/bin:$PATH" #
           cd mct                                    #
           dune build                                #
 
       - name: Run the test suite
         env:
           QCHECK_MSG_INTERVAL: 60
-        shell: bash -e {0}
         run: |
-          eval $(ocaml/tools/msvs-promote-path)                                                     #
-          export PATH="/cygdrive/d/ocaml/bin:$PATH"                                                 #
-          cd mct                                                                                    #
-          dune runtest @ci -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice #
+          cd mct
+          dune build "@ci" -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
