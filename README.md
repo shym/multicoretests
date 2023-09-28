@@ -31,6 +31,9 @@ Multicore tests
 [![Windows 5.2.0+trunk-bytecode](https://github.com/ocaml-multicore/multicoretests/actions/workflows/windows-520-trunk-bytecode.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/windows-520-trunk-bytecode.yml)
 [![Cygwin 5.2.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-520-trunk.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-520-trunk.yml)
 
+[![MSVC native](https://github.com/ocaml-multicore/multicoretests/actions/workflows/msvc-native.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/msvc-native.yml)
+[![MSVC bytecode](https://github.com/ocaml-multicore/multicoretests/actions/workflows/msvc-bytecode.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/msvc-bytecode.yml)
+
 Property-based tests of (parts of) the OCaml multicore compiler and run time.
 
 This project contains
