@@ -112,7 +112,7 @@ jobs:
         run: |
           eval $(ocaml/tools/msvs-promote-path)     #
           cd mct                                    #
-          dune build --verbose                      #
+          dune build                                #
 
       - name: Run the test suite
         env:
