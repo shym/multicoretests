@@ -1,6 +1,15 @@
-name: MSVC Development
+name: Common MSVC CI workflow
 
-on: [push, workflow_dispatch]
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+on:
+  workflow_call:
+    inputs:
+      bytecodeonly:
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -27,9 +36,11 @@ jobs:
 
       - name: Choose a cache key
         id: key
+        env:
+          BC_KEY_PART: ${{ bytecodeonly && '-bytecode' || '' }}
         run: |
           git -C ocaml rev-parse HEAD | Tee-Object -Variable sha
-          echo "cache_key=ocaml-msvc-${sha}-dune-3.11" | Tee-Object -FilePath "${env:GITHUB_OUTPUT}"
+          echo "cache_key=ocaml-msvc${env:BC_KEY_PART}-${sha}-dune-3.11" | Tee-Object -FilePath "${env:GITHUB_OUTPUT}"
 
       - name: Restore cache
         uses: actions/cache/restore@v3
@@ -50,20 +61,21 @@ jobs:
 
       - name: Build OCaml
         shell: bash -e {0}
+        env:
+          NATIVE: ${{ bytecodeonly && '--disable-native-compiler' || '' }}
         run: |
-          cd ocaml                                                                       #
-          mkdir /cygdrive/d/ocaml                                                        #
-          eval $(tools/msvs-promote-path)                                                #
-          ./configure --host=x86_64-pc-windows --with-flexdll --prefix=/cygdrive/d/ocaml #
-          make                                                                           #
-          make install                                                                   #
+          cd ocaml                                                                               #
+          mkdir /cygdrive/d/ocaml                                                                #
+          eval $(tools/msvs-promote-path)                                                        #
+          ./configure --host=x86_64-pc-windows --with-flexdll --prefix=/cygdrive/d/ocaml $NATIVE #
+          make                                                                                   #
+          make install                                                                           #
         if: "steps.cache.outputs.cache-hit != 'true'"
 
       - name: Fetch dune
         uses: actions/checkout@v4
         with:
           repository: ocaml/dune
-          ref: 3.11.0
           path: dune
         if: "steps.cache.outputs.cache-hit != 'true'"
 
@@ -103,8 +115,7 @@ jobs:
       - name: Fetch QCheck
         uses: actions/checkout@v4
         with:
-          repository: shym/qcheck
-          ref: no-bytes
+          repository: c-cube/qcheck
           path: mct/qcheck
 
       - name: Build the test suite
