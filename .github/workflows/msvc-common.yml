@@ -37,7 +37,7 @@ jobs:
       - name: Choose a cache key
         id: key
         env:
-          BC_KEY_PART: ${{ bytecodeonly && '-bytecode' || '' }}
+          BC_KEY_PART: ${{ inputs.bytecodeonly && '-bytecode' || '' }}
         run: |
           git -C ocaml rev-parse HEAD | Tee-Object -Variable sha
           echo "cache_key=ocaml-msvc${env:BC_KEY_PART}-${sha}-dune-3.11" | Tee-Object -FilePath "${env:GITHUB_OUTPUT}"
@@ -62,7 +62,7 @@ jobs:
       - name: Build OCaml
         shell: bash -e {0}
         env:
-          NATIVE: ${{ bytecodeonly && '--disable-native-compiler' || '' }}
+          NATIVE: ${{ inputs.bytecodeonly && '--disable-native-compiler' || '' }}
         run: |
           cd ocaml                                                                               #
           mkdir /cygdrive/d/ocaml                                                                #
