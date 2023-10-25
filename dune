@@ -1,9 +1,11 @@
 (env
  (debug-runtime
+  (ocamlopt_flags :standard -O3)
   (link_flags :standard -runtime-variant=d)
   (env-vars
    (MCTUTILS_TRUNCATE 50)))
  (_
+  (ocamlopt_flags :standard -O3)
   (env-vars
    (MCTUTILS_TRUNCATE 50)))
 )
