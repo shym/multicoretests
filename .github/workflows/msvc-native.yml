@@ -4,4 +4,5 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
+    timeout-minutes: 60
     uses: ./.github/workflows/msvc-common.yml
