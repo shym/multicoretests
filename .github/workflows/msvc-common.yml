@@ -35,8 +35,8 @@ jobs:
       - name: Fetch OCaml
         uses: actions/checkout@v4
         with:
-          repository: dra27/ocaml
-          ref: restore-msvc
+          repository: shym/ocaml
+          ref: reb27
           path: ocaml
           submodules: true
 
