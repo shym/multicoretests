@@ -29,6 +29,8 @@ jobs:
 
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
+        with:
+          toolset: 14.38
 
       - name: Fetch OCaml
         uses: actions/checkout@v4
