@@ -70,12 +70,12 @@ jobs:
         env:
           NATIVE: ${{ inputs.bytecodeonly && '--disable-native-compiler' || '' }}
         run: |
-          cd ocaml                                                                               #
-          mkdir /cygdrive/d/ocaml                                                                #
-          eval $(tools/msvs-promote-path)                                                        #
-          ./configure --host=x86_64-pc-windows --with-flexdll --prefix=/cygdrive/d/ocaml $NATIVE #
-          make                                                                                   #
-          make install                                                                           #
+          cd ocaml                                                                #
+          mkdir /cygdrive/d/ocaml                                                 #
+          eval $(tools/msvs-promote-path)                                         #
+          ./configure --host=x86_64-pc-windows --prefix=/cygdrive/d/ocaml $NATIVE #
+          make                                                                    #
+          make install                                                            #
         if: "steps.cache.outputs.cache-hit != 'true'"
 
       - name: Fetch dune
@@ -88,12 +88,12 @@ jobs:
       - name: Compile dune
         shell: bash -e {0}
         run: |
-          export PATH="/cygdrive/d/ocaml/bin:$PATH"                                        #
-          eval $(ocaml/tools/msvs-promote-path)                                            #
-          export INCLUDE="$INCLUDE;$(cygpath -w "$PWD/ocaml/runtime/winpthreads/include")" #
-          cd dune                                                                          #
-          make release                                                                     #
-          make install PREFIX='D:\ocaml'                                                   #
+          export PATH="/cygdrive/d/ocaml/bin:$PATH"                                #
+          eval $(ocaml/tools/msvs-promote-path)                                    #
+          export INCLUDE="$INCLUDE;$(cygpath -w "$PWD/ocaml/winpthreads/include")" #
+          cd dune                                                                  #
+          make release                                                             #
+          make install PREFIX='D:\ocaml'                                           #
         if: "steps.cache.outputs.cache-hit != 'true'"
 
       - name: Display configuration and set up PATH
