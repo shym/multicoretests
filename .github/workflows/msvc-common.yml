@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: shym/ocaml
-          ref: reb17
+          ref: reb21
           path: ocaml
           submodules: true
 
