@@ -46,7 +46,7 @@ jobs:
           BC_KEY_PART: ${{ inputs.bytecodeonly && '-bytecode' || '' }}
         run: |
           git -C ocaml rev-parse HEAD | Tee-Object -Variable sha
-          echo "cache_key=ocaml-msvc${env:BC_KEY_PART}-${sha}" | Tee-Object -FilePath "${env:GITHUB_OUTPUT}"
+          echo "cache_key=ocaml-msvc${env:BC_KEY_PART}-${sha}-dune" | Tee-Object -FilePath "${env:GITHUB_OUTPUT}"
 
       - name: Restore cache
         uses: actions/cache/restore@v3
@@ -90,7 +90,6 @@ jobs:
         run: |
           export PATH="/cygdrive/d/ocaml/bin:$PATH"                                #
           eval $(ocaml/tools/msvs-promote-path)                                    #
-          export INCLUDE="$INCLUDE;$(cygpath -w "$PWD/ocaml/winpthreads/include")" #
           cd dune                                                                  #
           make release                                                             #
           make install PREFIX='D:\ocaml'                                           #
