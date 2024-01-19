@@ -73,16 +73,16 @@ jobs:
       OCAMLRUNPARAM:            ${{ inputs.runparam }}
       DUNE_CI_ALIAS:            ${{ inputs.dune_alias }}
       COMPILER:                 ${{ inputs.compiler }}
-      OCAML_COMPILER_GIT_REF:   ${{ inputs.compiler_git_ref }}
-      CUSTOM_COMPILER_VERSION:  ${{ inputs.custom_compiler_version }}
-      CUSTOM_COMPILER_SRC:      ${{ inputs.custom_compiler_src }}
+      # OCAML_COMPILER_GIT_REF:   ${{ inputs.compiler_git_ref }}
+      # CUSTOM_COMPILER_VERSION:  ${{ inputs.custom_compiler_version }}
+      # CUSTOM_COMPILER_SRC:      ${{ inputs.custom_compiler_src }}
       CUSTOM_OCAML_PKG_VERSION: ${{ inputs.custom_ocaml_package_version }}
 
       # For the record, here is how to set up the environment to test
       # a PR-version of the compiler
-      # OCAML_COMPILER_GIT_REF:   'refs/pull/12345/head'
-      # CUSTOM_COMPILER_VERSION:  '5.1.0+pr12345'
-      # CUSTOM_COMPILER_SRC:      'https://github.com/ocaml/ocaml/archive/refs/pull/12345/head.tar.gz'
+      OCAML_COMPILER_GIT_REF:   'refs/pull/12923/head'
+      CUSTOM_COMPILER_VERSION:  '5.3.0+pr12923'
+      CUSTOM_COMPILER_SRC:      'https://github.com/ocaml/ocaml/archive/refs/pull/12923/head.tar.gz'
 
     runs-on: ${{ inputs.runs_on }}
 
