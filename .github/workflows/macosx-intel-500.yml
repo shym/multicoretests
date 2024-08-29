@@ -11,3 +11,4 @@ jobs:
     uses: ./.github/workflows/common.yml
     with:
       runs_on: 'macos-13'
+      platform: macos
