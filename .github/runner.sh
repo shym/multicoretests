@@ -182,8 +182,8 @@ build_testsuite() {
   esac
 
   cd multicoretests
-  dune build
-  dune build test/
+  dune build --verbose
+  dune build test/ --verbose
 }
 
 case "$1" in
