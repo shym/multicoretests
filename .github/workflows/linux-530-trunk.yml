@@ -5,9 +5,6 @@ on:
     # Every Monday morning, at 2:22 UTC
     - cron: '22 2 * * 1'
   pull_request:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
