@@ -1,9 +1,6 @@
 name: Cygwin 5.3
 
 on:
-  schedule:
-    # Every Monday morning, at 2:22 UTC
-    - cron: '22 2 * * 1'
   pull_request:
   workflow_dispatch:
 
