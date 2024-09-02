@@ -4,6 +4,7 @@ set -e
 
 OCAMLDIR=ocaml
 DUNEDIR=dune
+MULTICORETESTSDIR=multicoretests
 
 fatal() {
   printf %s "$1"
@@ -181,7 +182,7 @@ build_testsuite() {
       ;;
   esac
 
-  cd multicoretests
+  cd "$MULTICORETESTSDIR"
   dune build
   dune build test/
 }
@@ -201,6 +202,14 @@ case "$1" in
     ;;
   build)
     build_testsuite
+    ;;
+  testsuite)
+    cd "$MULTICORETESTSDIR"
+    dune build @ci -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice
+    ;;
+  internaltests)
+    cd "$MULTICORETESTSDIR"
+    dune runtest -j1 --no-buffer --display=quiet --cache=disabled --error-reporting=twice test/
     ;;
   *)
     fatal "Unknown command '$1'"
