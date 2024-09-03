@@ -102,8 +102,6 @@ jobs:
       - name: Restore cache
         uses: actions/cache/restore@v4
         id: cache
-        env:
-          PATH: ${{ env.pristine_path }}
         with:
           path: |
             ${{ env.prefix }}
@@ -141,8 +139,6 @@ jobs:
 
       - name: Save cache
         uses: actions/cache/save@v4
-        env:
-          PATH: ${{ env.pristine_path }}
         with:
           path: |
             ${{ env.prefix }}
