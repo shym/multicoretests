@@ -162,14 +162,7 @@ build_dune() {
 
   cd "$DUNEDIR"
   make release
-  case "$OCAML_PLATFORM" in
-    cygwin)
-      make install PREFIX="/cygdrive/d/ocaml"
-      ;;
-    *)
-      make install PREFIX="$prefix"
-      ;;
-  esac
+  make install PREFIX="$prefix"
   echo "$LOGENDGRP"
 }
 
