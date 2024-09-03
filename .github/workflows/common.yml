@@ -122,7 +122,8 @@ jobs:
           ref: ${{ env.COMPILER_REF }}
           path: ocaml
           submodules: true
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true' || inputs.platform == 'msvc'
+        # We need to fetch OCaml in all cases for MSVC for msvs-promote-path
 
       - name: Fetch dune
         uses: actions/checkout@v4
