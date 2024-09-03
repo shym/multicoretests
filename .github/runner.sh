@@ -26,15 +26,9 @@ setup() {
     opts="${opts:+-}$opts"
     echo "cache_key=ocaml-$sha-$OCAML_PLATFORM-$arch$opts" >> "$GITHUB_ENV"
     case "$OCAML_PLATFORM" in
-      mingw|msvc)
+      mingw|msvc|cygwin)
         prefix='D:\ocaml'
         bin='D:\ocaml\bin'
-        ;;
-      cygwin)
-        # On Cygwin, we want both directory syntaxes in PATH
-        prefix='/cygdrive/d/ocaml'
-        bin='/cygdrive/d/ocaml/bin'
-        printf 'D:\\ocaml\\bin\n' >> "$GITHUB_PATH"
         ;;
       *)
         prefix="$HOME/local"
@@ -165,7 +159,14 @@ build_dune() {
 
   cd "$DUNEDIR"
   make release
-  make install PREFIX="$prefix"
+  case "$OCAML_PLATFORM" in
+    cygwin)
+      make install PREFIX="/cygdrive/d/ocaml"
+      ;;
+    *)
+      make install PREFIX="$prefix"
+      ;;
+  esac
   echo "$LOGENDGRP"
 }
 
