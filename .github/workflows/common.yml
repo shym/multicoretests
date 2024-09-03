@@ -175,4 +175,4 @@ jobs:
       - name: Printenv
         run: |
           cd multicoretests
-          dune printenv
+          D:\ocaml\bin\dune printenv
