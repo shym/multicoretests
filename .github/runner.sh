@@ -19,7 +19,10 @@ compiler_sha() {
 
 setup() {
   if [ -n "$GITHUB_ENV" ] && [ -n "$GITHUB_PATH" ] ; then
-    echo "pristine_path=$PATH" >> "$GITHUB_ENV"
+    if [ -z "$pristine_path" ]; then
+      # Save the initial $PATH only if it's not yet saved
+      echo "pristine_path=$PATH" >> "$GITHUB_ENV"
+    fi
     sha="$(compiler_sha)" || fatal "Cannot find compiler's SHA"
     arch="$(uname -m)"
     opts="$(printf %s "$OCAML_OPTIONS" | tr " " -)"

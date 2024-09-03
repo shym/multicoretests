@@ -67,6 +67,11 @@ jobs:
     timeout-minutes: ${{ inputs.timeout }}
 
     steps:
+      - name: Save PATH on Windows for cache actions
+        run: |
+          echo "pristine_path=${env:Path}" >> "${env:GITHUB_ENV}"
+        if: runner.os == 'Windows'
+
       - name: Configure EOLs on Cygwin
         run: |
           # Ensure that .expected files are not modified by check out
