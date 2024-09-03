@@ -90,6 +90,15 @@ jobs:
         run: |
           bash multicoretests/.github/runner.sh setup
 
+      - name: Env bash
+        shell: bash
+        run: |
+          echo $PATH
+
+      - name: Env pwsh
+        run: |
+          echo ${env:PATH}
+
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
         if: inputs.platform == 'msvc'
@@ -148,6 +157,7 @@ jobs:
       - name: Show the configuration
         run: |
           bash multicoretests/.github/runner.sh show_config
+          bash -c "find /cygdrive/d/ocaml"
 
       - name: Build the test suite
         run: |
