@@ -18,3 +18,4 @@ jobs:
       platform: mingw
       options: bytecode-only
       timeout: 240
+      compiler_ref: refs/heads/trunk

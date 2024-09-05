@@ -16,3 +16,4 @@ jobs:
     with:
       runs_on: 'macos-13'
       platform: macos
+      compiler_ref: refs/heads/trunk

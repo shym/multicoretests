@@ -16,3 +16,4 @@ jobs:
     with:
       options: bytecode-only
       timeout: 240
+      compiler_ref: refs/heads/trunk
