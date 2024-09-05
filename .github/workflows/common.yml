@@ -62,6 +62,9 @@ jobs:
       LOGBEGINGRP:              "::group::"
       LOGENDGRP:                "::endgroup::"
 
+      # For the record, PR 12345 of the compiler can be tested simply by setting
+      # COMPILER_REF:             'refs/pull/12345/head'
+
     runs-on: ${{ inputs.runs_on }}
 
     timeout-minutes: ${{ inputs.timeout }}
