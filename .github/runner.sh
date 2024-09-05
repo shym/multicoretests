@@ -13,6 +13,7 @@ fatal() {
 
 compiler_sha() {
   # Expect $COMPILER_REPO and $COMPILER_REF to be set
+  # Note: only GitHub-hosted compiler forks are supported for now
   git ls-remote "https://github.com/$COMPILER_REPO.git" "$COMPILER_REF" \
     | cut -f 1
 }
@@ -26,15 +27,15 @@ setup() {
     echo "cache_key=ocaml-$sha-$OCAML_PLATFORM-$arch$opts" >> "$GITHUB_ENV"
     case "$OCAML_PLATFORM" in
       mingw|msvc|cygwin)
-        prefix='D:\ocaml'
+        PREFIX='D:\ocaml'
         bin='D:\ocaml\bin'
         ;;
       *)
-        prefix="$HOME/local"
+        PREFIX="$HOME/local"
         bin="$HOME/local/bin"
         ;;
     esac
-    printf "prefix=%s\n" "$prefix" >> "$GITHUB_ENV"
+    printf "PREFIX=%s\n" "$PREFIX" >> "$GITHUB_ENV"
     printf "%s\n" "$bin" >> "$GITHUB_PATH"
     if [ -z "$JOBS" ] ; then
       if command -v nproc > /dev/null; then
@@ -82,7 +83,7 @@ build_ocaml() {
       opts="$opts --prefix=/cygdrive/d/ocaml"
       ;;
     *)
-      opts="$opts --prefix=$prefix"
+      opts="$opts --prefix=$PREFIX"
       ;;
   esac
 
@@ -158,7 +159,7 @@ build_dune() {
 
   cd "$DUNEDIR"
   make release
-  make install PREFIX="$prefix"
+  make install PREFIX="$PREFIX"
   echo "$LOGENDGRP"
 }
 

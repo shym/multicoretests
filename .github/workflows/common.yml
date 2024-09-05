@@ -100,7 +100,7 @@ jobs:
         id: cache
         with:
           path: |
-            ${{ env.prefix }}
+            ${{ env.PREFIX }}
             C:\cygwin-packages
           key: ${{ env.cache_key }}
 
@@ -139,7 +139,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: |
-            ${{ env.prefix }}
+            ${{ env.PREFIX }}
             C:\cygwin-packages
           key: ${{ env.cache_key }}
         if: steps.cache.outputs.cache-hit != 'true'
