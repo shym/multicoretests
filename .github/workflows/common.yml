@@ -44,7 +44,7 @@ on:
       compiler_ref:
         description: 'Git reference to use'
         type: string
-        default: 'refs/heads/trunk'
+        required: true
 
 permissions: {}
 
