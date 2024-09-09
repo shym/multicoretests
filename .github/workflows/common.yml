@@ -160,7 +160,7 @@ jobs:
           echo ${env:PATH}
           cd multicoretests
           D:\ocaml\bin\dune printenv
-          echo $LastExitCode
+          echo $?
 
       - name: Ldd
         run: |
