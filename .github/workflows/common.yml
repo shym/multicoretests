@@ -165,3 +165,4 @@ jobs:
       - name: Ldd
         run: |
           bash -c "ldd /cygdrive/d/ocaml/bin/dune"
+          dir D:\cygwin\bin
