@@ -161,3 +161,7 @@ jobs:
           cd multicoretests
           D:\ocaml\bin\dune printenv
           echo $Error
+
+      - name: Ldd
+        run: |
+          bash -c "ldd /cygdrive/d/ocaml/bin/dune"
