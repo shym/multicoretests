@@ -95,15 +95,6 @@ jobs:
         run: |
           bash multicoretests/.github/runner.sh setup
 
-      - name: Env bash
-        shell: bash
-        run: |
-          echo $PATH
-
-      - name: Env pwsh
-        run: |
-          echo ${env:PATH}
-
       - name: Set up MSVC
         uses: ilammy/msvc-dev-cmd@v1
         if: inputs.platform == 'msvc'
@@ -174,5 +165,7 @@ jobs:
 
       - name: Printenv
         run: |
+          echo ${env:PATH}
           cd multicoretests
           D:\ocaml\bin\dune printenv
+          echo $Error
