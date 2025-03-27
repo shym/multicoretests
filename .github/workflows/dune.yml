@@ -13,6 +13,4 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Use dune
-        uses: shym/setup-dune@main
-        with:
-          automagic: true
+        uses: shym/setup-dune@v0
