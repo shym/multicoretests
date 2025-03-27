@@ -31,10 +31,10 @@ jobs:
           key: dune-cache
       - name: Resolve dependencies
         run: |
-          dune pkg lock --display short
+          dune pkg lock
       - name: Build project
         run: |
-          dune build --display short
+          dune build
       - name: Run tests
         run: |
-          dune runtest --display short
+          dune runtest
