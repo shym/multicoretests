@@ -1,0 +1,40 @@
+name: Automagic
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install and setup dune
+        run: |
+          # In CI, let’s go the `curl | sh` way :-)
+          curl -fsSL https://get.dune.build/install | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "DUNE_CACHE_ROOT=$HOME/.cache/dune" >> "$GITHUB_ENV"
+          # Check
+          set -x
+          find "$HOME/.local/bin"
+          find "$HOME/.cache/dune"
+          echo "$XDG_CACHE_HOME"
+      - name: Cache dune’s cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.DUNE_CACHE_ROOT }}
+          key: dune-cache
+      - name: Resolve dependencies
+        run: |
+          dune pkg lock --display short
+      - name: Build project
+        run: |
+          dune build --display short
+      - name: Run tests
+        run: |
+          dune runtest --display short
