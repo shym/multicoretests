@@ -87,7 +87,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: c-cube/qcheck
-          ref: v0.23
+          ref: v0.25
           path: multicoretests/qcheck
 
       - name: Pre-Setup
@@ -108,7 +108,7 @@ jobs:
           key: ${{ env.cache_key }}
 
       - name: Install Cygwin (Windows only)
-        uses: cygwin/cygwin-install-action@v4
+        uses: cygwin/cygwin-install-action@v5
         with:
           packages: make,bash${{ inputs.platform == 'mingw' && ',mingw64-x86_64-gcc-core,mingw64-x86_64-gcc-g++' || '' }}${{ inputs.platform == 'cygwin' && ',gcc-core' }}
           install-dir: 'D:\cygwin'
@@ -128,7 +128,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ocaml/dune
-          ref: 3.16.0
+          ref: 3.18.0
           path: dune
         if: steps.cache.outputs.cache-hit != 'true'
 

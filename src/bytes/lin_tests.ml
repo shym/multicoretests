@@ -6,6 +6,7 @@ module BConf = struct
   let init () = Stdlib.Bytes.make 42 '0'
   let cleanup _ = ()
 
+  let bytes_to_seq b = List.to_seq (List.of_seq (Bytes.to_seq b)) (* eager version *)
   open Lin
   let int,string = nat_small, string_small_printable
   let api = [
@@ -29,6 +30,7 @@ module BConf = struct
     val_ "Bytes.contains"          Bytes.contains          (t @-> char @-> returning_or_exc bool);
     val_ "Bytes.contains_from"     Bytes.contains_from     (t @-> int @-> char @-> returning_or_exc bool);
     val_ "Bytes.rcontains_from"    Bytes.rcontains_from    (t @-> int @-> char @-> returning_or_exc bool);
+    val_ "Bytes.to_seq"            bytes_to_seq            (t @-> returning (seq char));
     (* UTF codecs and validations *)
     val_ "Bytes.is_valid_utf_8"    Bytes.is_valid_utf_8    (t @-> returning bool);
     val_ "Bytes.is_valid_utf_16be" Bytes.is_valid_utf_16be (t @-> returning bool);
@@ -42,10 +44,17 @@ module BConf = struct
 end
 
 module BT_domain = Lin_domain.Make(BConf)
-module BT_thread = Lin_thread.Make(BConf) [@alert "-experimental"]
+module BT_thread = Lin_thread.Make(BConf)
+
+let thread_tail =
+  if Sys.(ocaml_release.major,ocaml_release.minor) < (5,3)
+  then
+    (Printf.printf "Lin.thread Bytes tests disabled on OCaml 5.2 and earlier\n%!"; [])
+  else
+    [ BT_thread.neg_lin_test ~count:5000 ~name:"Lin Bytes test with Thread"; ]
 ;;
-QCheck_base_runner.run_tests_main [
-  BT_domain.neg_lin_test ~count:5000 ~name:"Lin Bytes test with Domain";
-  BT_thread.lin_test     ~count:250  ~name:"Lin Bytes test with Thread";
-  BT_domain.stress_test  ~count:1000 ~name:"Lin Bytes stress test with Domain";
-]
+QCheck_base_runner.run_tests_main (
+  BT_domain.neg_lin_test ~count:5000 ~name:"Lin Bytes test with Domain"::
+  BT_domain.stress_test  ~count:1000 ~name:"Lin Bytes stress test with Domain"::
+  thread_tail
+)

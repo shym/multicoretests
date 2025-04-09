@@ -11,6 +11,7 @@ Multicore tests
 [![Linux 5.2.1-musl](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-musl.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-musl.yml)
 [![Linux 32-bit 5.2.1](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-32bit.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-32bit.yml)
 [![Linux FP 5.2.1](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-fp.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-fp.yml)
+[![Linux ARM64 5.2.1](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-arm64.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-52x-arm64.yml)
 [![MinGW 5.2.1](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-52x.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-52x.yml)
 [![MinGW 5.2.1-bytecode](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-52x-bytecode.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-52x-bytecode.yml)
 [![Cygwin 5.2.1](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-52x.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-52x.yml)
@@ -23,6 +24,7 @@ Multicore tests
 [![Linux 5.3.0+trunk-musl](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-musl.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-musl.yml)
 [![Linux 32-bit 5.3.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-32bit.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-32bit.yml)
 [![Linux FP 5.3.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-fp.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-fp.yml)
+[![Linux ARM64 5.3.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-arm64.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-530-trunk-arm64.yml)
 [![MinGW 5.3.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-530-trunk.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-530-trunk.yml)
 [![MinGW 5.3.0+trunk-bytecode](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-530-trunk-bytecode.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-530-trunk-bytecode.yml)
 [![Cygwin 5.3.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-530-trunk.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-530-trunk.yml)
@@ -37,6 +39,7 @@ Multicore tests
 [![Linux 5.4.0+trunk-musl](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-musl.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-musl.yml)
 [![Linux 32-bit 5.4.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-32bit.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-32bit.yml)
 [![Linux FP 5.4.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-fp.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-fp.yml)
+[![Linux ARM64 5.4.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-arm64.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/linux-540-trunk-arm64.yml)
 [![MinGW 5.4.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-540-trunk.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-540-trunk.yml)
 [![MinGW 5.4.0+trunk-bytecode](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-540-trunk-bytecode.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/mingw-540-trunk-bytecode.yml)
 [![Cygwin 5.4.0+trunk](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-540-trunk.yml/badge.svg)](https://github.com/ocaml-multicore/multicoretests/actions/workflows/cygwin-540-trunk.yml)
@@ -64,8 +67,13 @@ Installation instructions, and running the tests
 The multicore test suite requires OCaml 5.x:
 ```
 opam update
-opam switch create 5.0.0
+opam switch create 5.3.0
 ```
+
+It is designed to stress test OCaml 5's multicore features. As such, it requires
+a multicore machine to run successfully and will fail on a single-CPU setup. We
+recommend running the test suite with 3 or more (virtual) CPUs.
+
 
 Installing the libraries
 ------------------------
@@ -106,6 +114,11 @@ opam install . --deps-only --with-test
 dune build
 dune runtest -j1 --no-buffer --display=quiet
 ```
+
+As some of the tests are negative, e.g., confirming known domain unsafety by
+finding a counterexample, we recommend running only one property-based test at a
+time (`-j1`) to prevent contention between the individual tests for CPU
+resources.
 
 Individual tests can be run by invoking `dune exec`. For example:
 ```
@@ -451,8 +464,8 @@ Tests of the `Gc` module revealed that `Gc.quick_stat` did not
 return [a record with 4 zero fields as documented](https://github.com/ocaml/ocaml/pull/13424)
 
 
-Shared heap assertion failure (known, runtime)
-----------------------------------------------
+Shared heap assertion failure (known, fixed, runtime)
+-----------------------------------------------------
 
 New GC tests offered a simple reproducer for consistently triggering
 [a shared heap assertion error](https://github.com/ocaml/ocaml/issues/13090)
@@ -827,4 +840,4 @@ let () = Task.teardown_pool pool
 
 ---
 
-This project has been created and is maintained by <a href="https://tarides.com/">Tarides</a>.
+This project has been created by <a href="https://tarides.com/">Tarides</a>.
