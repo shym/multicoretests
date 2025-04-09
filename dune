@@ -46,14 +46,11 @@
 ; A rule to repeat the test executable given as dependency a couple of
 ; times and report at the end whether this worked
 
-; To change the test to repeat, change the source of the `copy`:
-(rule
- (copy src/dynarray/stm_tests.exe focusedtest.exe))
-
+; To change the test to repeat, change the `deps`:
 (rule
  (alias focusedtest)
  (package multicoretests)
- (deps focusedtest.exe)
+ (deps src/dynarray/stm_tests.exe)
  (enabled_if (<> %{os_type} Win32))
  (action
   (no-infer
@@ -61,10 +58,10 @@
     (write-file hoped "")
     (write-file failed-runs "")
     (bash
-     "ulimit -c unlimited; for i in `seq 100`; do echo Starting $i-th run; ./focusedtest.exe -v || (case $? in 139) coredumpctl info;; esac; echo $i >> failed-runs); done")
+     "ulimit -c unlimited; for i in `seq 100`; do echo Starting $i-th run; %{deps} -v || (case $? in 139) coredumpctl info;; esac; echo $i >> failed-runs); done")
     ; Exercise a seed known to have caused a segfault
     (bash
-     "ulimit -c unlimited; for i in `seq 101 200`; do echo Starting $i-th run; ./focusedtest.exe -v -s 358085500 || (case $? in 139) coredumpctl info;; esac; echo $i >> failed-runs); done")
+     "ulimit -c unlimited; for i in `seq 101 200`; do echo Starting $i-th run; %{deps} -v -s 358085500 || (case $? in 139) coredumpctl info;; esac; echo $i >> failed-runs); done")
     ; edit the previous line to focus on a particular seed
     (diff failed-runs hoped)))))
 
