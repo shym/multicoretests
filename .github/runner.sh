@@ -60,7 +60,7 @@ setup() {
       ;;
     linux,*musl*)
       sudo apt-get update
-      sudo apt-get install musl-tools
+      sudo apt-get install musl-tools gdb
       ;;
   esac
 }

@@ -58,10 +58,10 @@
     (write-file hoped "")
     (write-file failed-runs "")
     (bash
-     "ulimit -c unlimited; for i in `seq 100`; do echo Starting $i-th run; %{deps} -v || (case $? in 139) coredumpctl info;; esac; echo $i >> failed-runs); done")
+     "ulimit -c unlimited; for i in `seq 100`; do echo Starting $i-th run; %{deps} -v || (case $? in 139) coredumpctl debug -A '-ex \"t a a bt\" -ex quit';; esac; echo $i >> failed-runs); done")
     ; Exercise a seed known to have caused a segfault
     (bash
-     "ulimit -c unlimited; for i in `seq 101 200`; do echo Starting $i-th run; %{deps} -v -s 358085500 || (case $? in 139) coredumpctl info;; esac; echo $i >> failed-runs); done")
+     "ulimit -c unlimited; for i in `seq 101 200`; do echo Starting $i-th run; %{deps} -v -s 358085500 || (case $? in 139) coredumpctl debug -A '-ex \"t a a bt\" -ex quit';; esac; echo $i >> failed-runs); done")
     ; edit the previous line to focus on a particular seed
     (diff failed-runs hoped)))))
 
